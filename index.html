@@ -3,208 +3,195 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GenFiler Ecosystem</title>
+    <title>GenFiler Suite v2.0</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        /* --- ESTILOS VISUALES (Tema Oscuro/Rojo) --- */
         :root {
+            --sidebar-width: 260px;
             --brand-color: #C50D23;
-            --brand-dark: #8a0918;
-            --bg-body: #1a1a1a;
-            --card-bg: #252525;
-            --text-main: #ffffff;
-            --text-sec: #a0a0a0;
+            --bg-dark: #1e1e1e;
+            --text-light: #ecf0f1;
+            --hover-color: #2c3e50;
         }
 
         body {
-            margin: 0;
-            padding: 0;
-            font-family: 'Segoe UI', system-ui, sans-serif;
-            background-color: var(--bg-body);
-            color: var(--text-main);
-            min-height: 100vh;
+            margin: 0; padding: 0;
+            font-family: 'Segoe UI', sans-serif;
+            overflow: hidden; /* Importante: La Suite no hace scroll, lo hacen las apps */
+            display: flex;
+            height: 100vh;
+            background-color: #121212;
+        }
+
+        /* --- BARRA LATERAL --- */
+        .sidebar {
+            width: var(--sidebar-width);
+            background-color: var(--bg-dark);
+            color: var(--text-light);
             display: flex;
             flex-direction: column;
-            align-items: center;
-            justify-content: center;
+            border-right: 1px solid #333;
+            z-index: 100;
         }
 
-        /* Encabezado */
-        header {
+        .brand {
+            padding: 25px;
             text-align: center;
-            margin-bottom: 50px;
-            animation: fadeInDown 0.8s ease;
+            font-size: 1.5rem;
+            font-weight: bold;
+            letter-spacing: 1px;
+            background: rgba(0,0,0,0.2);
+            border-bottom: 3px solid var(--brand-color);
         }
 
-        h1 {
-            font-size: 3rem;
-            margin: 0;
-            letter-spacing: -1px;
-        }
+        .brand span { color: var(--brand-color); }
 
-        h1 span {
-            color: var(--brand-color);
-        }
-
-        p.subtitle {
-            color: var(--text-sec);
-            font-size: 1.2rem;
-            margin-top: 10px;
-        }
-
-        /* Contenedor de Tarjetas (Grid) */
-        .apps-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 30px;
-            width: 90%;
-            max-width: 1200px;
-            padding: 20px;
-        }
-
-        /* Tarjetas de Apps */
-        .app-card {
-            background: var(--card-bg);
-            border-radius: 20px;
-            padding: 40px 30px;
-            text-align: center;
-            text-decoration: none;
-            color: var(--text-main);
-            border: 1px solid #333;
-            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-            position: relative;
-            overflow: hidden;
+        .menu {
+            flex-grow: 1;
+            padding-top: 20px;
             display: flex;
             flex-direction: column;
-            justify-content: space-between;
-            height: 300px;
+            gap: 5px;
         }
 
-        /* Efecto Hover */
-        .app-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 15px 30px rgba(197, 13, 35, 0.2); /* Sombra roja sutil */
-            border-color: var(--brand-color);
-        }
-
-        .app-card::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 5px;
-            background: var(--brand-color);
-            transform: scaleX(0);
-            transform-origin: left;
-            transition: transform 0.3s ease;
-        }
-
-        .app-card:hover::before {
-            transform: scaleX(1);
-        }
-
-        /* Iconos */
-        .icon-box {
-            font-size: 4rem;
-            margin-bottom: 20px;
-            color: var(--text-sec);
-            transition: color 0.3s;
-        }
-
-        .app-card:hover .icon-box {
-            color: var(--brand-color);
-        }
-
-        /* Texto */
-        .app-title {
-            font-size: 1.8rem;
-            font-weight: bold;
-            margin-bottom: 10px;
-        }
-
-        .app-desc {
-            font-size: 0.95rem;
-            color: var(--text-sec);
-            line-height: 1.5;
-            margin-bottom: 30px;
-        }
-
-        /* Botón Simulado */
-        .launch-btn {
-            background: transparent;
-            border: 2px solid var(--text-sec);
-            color: var(--text-sec);
-            padding: 10px 25px;
-            border-radius: 50px;
-            font-weight: bold;
-            text-transform: uppercase;
-            font-size: 0.8rem;
+        .menu-btn {
+            background: none;
+            border: none;
+            color: #aaa;
+            padding: 15px 25px;
+            text-align: left;
+            font-size: 1rem;
+            cursor: pointer;
             transition: all 0.3s;
-            align-self: center;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            text-decoration: none; /* Por si usamos <a> */
         }
 
-        .app-card:hover .launch-btn {
-            background: var(--brand-color);
-            border-color: var(--brand-color);
+        .menu-btn:hover {
+            background-color: var(--hover-color);
             color: white;
+            padding-left: 30px; /* Efecto de desplazamiento */
         }
 
-        /* Animaciones */
-        @keyframes fadeInDown {
-            from { opacity: 0; transform: translateY(-20px); }
-            to { opacity: 1; transform: translateY(0); }
+        .menu-btn.active {
+            background-color: rgba(197, 13, 35, 0.15); /* Fondo rojo transparente */
+            color: white;
+            border-right: 4px solid var(--brand-color);
         }
 
-        @media (max-width: 768px) {
-            h1 { font-size: 2rem; }
-            .app-card { height: auto; padding: 30px 20px; }
+        .menu-btn i { width: 20px; text-align: center; }
+
+        /* --- ÁREA PRINCIPAL (IFRAMES) --- */
+        .main-stage {
+            flex-grow: 1;
+            position: relative;
+            background-color: #f0f2f5; /* Color de fondo por defecto */
+        }
+
+        /* La magia de la persistencia */
+        iframe.app-frame {
+            width: 100%;
+            height: 100%;
+            border: none;
+            position: absolute;
+            top: 0; left: 0;
+            background: white;
+            
+            /* Por defecto ocultos pero cargados */
+            visibility: hidden; 
+            opacity: 0;
+            z-index: 0;
+            transition: opacity 0.2s ease-in-out;
+        }
+
+        iframe.app-frame.active {
+            visibility: visible;
+            opacity: 1;
+            z-index: 10;
+        }
+
+        /* Spinner de carga */
+        .loader {
+            position: absolute; top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            color: var(--brand-color);
+            font-size: 2rem;
         }
     </style>
 </head>
 <body>
 
-    <header>
-        <h1>GenFiler <span>Suite</span></h1>
-        <p class="subtitle">Selecciona una herramienta para comenzar</p>
-    </header>
+    <nav class="sidebar">
+        <div class="brand">
+            <i class="fas fa-cubes"></i> GenFiler <span>Suite</span>
+        </div>
 
-    <div class="apps-container">
-        
-        <a href="https://almacenptlg-a11y.github.io/GenFiler/" class="app-card" target="_blank">
-            <div>
-                <div class="icon-box"><i class="far fa-file-pdf"></i></div>
-                <div class="app-title">GenFiler PDF</div>
-                <div class="app-desc">
-                    Procesamiento inteligente de documentos PDF, extracción de coordenadas y generación de etiquetas.
-                </div>
-            </div>
-            <span class="launch-btn">Iniciar <i class="fas fa-arrow-right"></i></span>
-        </a>
+        <div class="menu">
+            <button class="menu-btn active" onclick="switchApp('dashboard', this)">
+                <i class="fas fa-home"></i> Inicio
+            </button>
 
-        <a href="https://almacenptlg-a11y.github.io/SPSA_Filer" class="app-card" target="_blank">
-            <div>
-                <div class="icon-box"><i class="fas fa-chart-pie"></i></div>
-                <div class="app-title">SPSA Filer</div>
-                <div class="app-desc">
-                    Extraccion de Datos ordenes de compra SPSA - Makro.
-                </div>
-            </div>
-            <span class="launch-btn">Iniciar <i class="fas fa-arrow-right"></i></span>
-        </a>
+            <button class="menu-btn" onclick="switchApp('genfiler', this)">
+                <i class="far fa-file-pdf" style="color:#e74c3c"></i> GenFiler PDF
+            </button>
 
-        <a href="https://almacenptlg-a11y.github.io/XLSX_Reporter" class="app-card" target="_blank">
-            <div>
-                <div class="icon-box"><i class="fas fa-file-excel"></i></div>
-                <div class="app-title">XLSX Filer</div>
-                <div class="app-desc">
-                    Herramientas avanzadas para hojas de cálculo y transformación de datos Excel.
-                </div>
-            </div>
-            <span class="launch-btn">Iniciar <i class="fas fa-arrow-right"></i></span>
-        </a>
+            <button class="menu-btn" onclick="switchApp('spsa', this)">
+                <i class="fas fa-chart-pie" style="color:#f1c40f"></i> SPSA Filer
+            </button>
 
-    </div>
+            <button class="menu-btn" onclick="switchApp('xlsx', this)">
+                <i class="fas fa-file-excel" style="color:#2ecc71"></i> XLSX Filer
+            </button>
+        </div>
 
-    <footer style="margin-top: 50px; color: #555; font-size: 0.8rem;">
-        &copy; 2026 GenFiler Ecosystem v2.0
-    </footer>
+        <div style="padding: 20px; font-size: 0.8rem; color: #666; text-align: center;">
+            v2.0 Connected
+        </div>
+    </nav>
+
+    <main class="main-stage">
+        <div class="loader"><i class="fas fa-circle-notch fa-spin"></i> Cargando recursos...</div>
+
+        <iframe id="frame-dashboard" class="app-frame active" 
+            srcdoc="<body style='font-family:sans-serif; display:flex; justify-content:center; align-items:center; height:100vh; background:#f4f4f4; color:#333; text-align:center;'><div><h1 style='color:#C50D23; font-size:3rem;'>Bienvenido a GenFiler</h1><p>Selecciona una herramienta del menú para comenzar.</p></div></body>">
+        </iframe>
+
+        <iframe id="frame-genfiler" class="app-frame" 
+            src="https://almacenptlg-a11y.github.io/GenFiler/">
+        </iframe>
+
+        <iframe id="frame-spsa" class="app-frame" 
+            src="https://almacenptlg-a11y.github.io/SPSA_Filer/">
+        </iframe>
+
+        <iframe id="frame-xlsx" class="app-frame" 
+            src="https://almacenptlg-a11y.github.io/XLSX_Reporter/">
+        </iframe>
+
+    </main>
+
+    <script>
+        function switchApp(appId, btnElement) {
+            // 1. Manejo visual de botones (Sidebar)
+            document.querySelectorAll('.menu-btn').forEach(btn => btn.classList.remove('active'));
+            if(btnElement) btnElement.classList.add('active');
+
+            // 2. Manejo de Iframe (La parte clave de la persistencia)
+            // Ocultamos todos (quitamos clase active) pero NO cambiamos el SRC, por lo que no se recargan
+            document.querySelectorAll('.app-frame').forEach(frame => {
+                frame.classList.remove('active');
+            });
+
+            // Mostramos el seleccionado
+            const selectedFrame = document.getElementById('frame-' + appId);
+            if(selectedFrame) {
+                selectedFrame.classList.add('active');
+            }
+        }
+    </script>
 
 </body>
 </html>
