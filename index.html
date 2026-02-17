@@ -3,195 +3,344 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GenFiler Suite v2.0</title>
+    <title>GenFiler Ecosystem v2.0</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* --- ESTILOS VISUALES (Tema Oscuro/Rojo) --- */
+        /* --- VARIABLES & RESET --- */
         :root {
-            --sidebar-width: 260px;
             --brand-color: #C50D23;
-            --bg-dark: #1e1e1e;
-            --text-light: #ecf0f1;
-            --hover-color: #2c3e50;
+            --brand-dark: #8a0918;
+            --sidebar-width: 260px;
+            --sidebar-collapsed: 70px;
+            --bg-dark: #121212;
+            --bg-panel: #1e1e1e;
+            --text-main: #ecf0f1;
+            --text-sec: #a0a0a0;
+            --transition-speed: 0.3s;
         }
 
         body {
             margin: 0; padding: 0;
-            font-family: 'Segoe UI', sans-serif;
-            overflow: hidden; /* Importante: La Suite no hace scroll, lo hacen las apps */
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            overflow: hidden; /* El scroll lo manejan los iframes */
             display: flex;
             height: 100vh;
-            background-color: #121212;
         }
 
-        /* --- BARRA LATERAL --- */
+        /* --- SIDEBAR (Menú Lateral) --- */
         .sidebar {
             width: var(--sidebar-width);
-            background-color: var(--bg-dark);
-            color: var(--text-light);
-            display: flex;
-            flex-direction: column;
+            background-color: var(--bg-panel);
             border-right: 1px solid #333;
-            z-index: 100;
-        }
-
-        .brand {
-            padding: 25px;
-            text-align: center;
-            font-size: 1.5rem;
-            font-weight: bold;
-            letter-spacing: 1px;
-            background: rgba(0,0,0,0.2);
-            border-bottom: 3px solid var(--brand-color);
-        }
-
-        .brand span { color: var(--brand-color); }
-
-        .menu {
-            flex-grow: 1;
-            padding-top: 20px;
             display: flex;
             flex-direction: column;
-            gap: 5px;
+            transition: width var(--transition-speed) ease;
+            z-index: 1000;
+            flex-shrink: 0;
+            position: relative;
         }
 
-        .menu-btn {
-            background: none;
-            border: none;
-            color: #aaa;
-            padding: 15px 25px;
-            text-align: left;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: all 0.3s;
+        .sidebar.collapsed {
+            width: var(--sidebar-collapsed);
+        }
+
+        /* Cabecera Sidebar */
+        .sidebar-header {
+            height: 70px;
             display: flex;
             align-items: center;
-            gap: 15px;
-            text-decoration: none; /* Por si usamos <a> */
+            padding: 0 20px;
+            border-bottom: 2px solid var(--brand-color);
+            overflow: hidden;
+            white-space: nowrap;
         }
 
-        .menu-btn:hover {
-            background-color: var(--hover-color);
-            color: white;
-            padding-left: 30px; /* Efecto de desplazamiento */
+        .logo-text {
+            font-weight: bold;
+            font-size: 1.2rem;
+            margin-left: 10px;
+            opacity: 1;
+            transition: opacity 0.2s;
+        }
+        
+        .sidebar.collapsed .logo-text { opacity: 0; pointer-events: none; }
+        .sidebar.collapsed .sidebar-header { justify-content: center; padding: 0; }
+
+        /* Botones del Menú */
+        .menu-items { flex-grow: 1; padding-top: 20px; }
+
+        .menu-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-sec);
+            width: 100%;
+            padding: 15px 20px;
+            text-align: left;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            font-size: 1rem;
+            transition: all 0.2s;
+            position: relative;
         }
 
-        .menu-btn.active {
-            background-color: rgba(197, 13, 35, 0.15); /* Fondo rojo transparente */
-            color: white;
-            border-right: 4px solid var(--brand-color);
+        .menu-btn i { 
+            width: 30px; 
+            text-align: center; 
+            font-size: 1.2rem;
+        }
+        
+        .menu-btn span {
+            margin-left: 10px;
+            white-space: nowrap;
+            opacity: 1;
+            transition: opacity 0.2s;
         }
 
-        .menu-btn i { width: 20px; text-align: center; }
+        .sidebar.collapsed .menu-btn span { opacity: 0; width: 0; overflow: hidden; }
+        .sidebar.collapsed .menu-btn { justify-content: center; padding: 15px 0; }
 
-        /* --- ÁREA PRINCIPAL (IFRAMES) --- */
-        .main-stage {
+        .menu-btn:hover { background-color: rgba(255,255,255,0.05); color: white; }
+        .menu-btn.active { background-color: rgba(197, 13, 35, 0.15); color: white; border-right: 4px solid var(--brand-color); }
+
+        /* Toggle Button */
+        .toggle-btn {
+            background: #000;
+            border: none;
+            color: #555;
+            padding: 15px;
+            cursor: pointer;
+            text-align: center;
+            border-top: 1px solid #333;
+        }
+        .toggle-btn:hover { color: white; }
+
+        /* --- MAIN AREA (Contenedor Principal) --- */
+        .main-content {
             flex-grow: 1;
             position: relative;
-            background-color: #f0f2f5; /* Color de fondo por defecto */
+            background-color: var(--bg-dark);
+            overflow: hidden;
         }
 
-        /* La magia de la persistencia */
-        iframe.app-frame {
-            width: 100%;
-            height: 100%;
-            border: none;
-            position: absolute;
-            top: 0; left: 0;
-            background: white;
-            
-            /* Por defecto ocultos pero cargados */
-            visibility: hidden; 
-            opacity: 0;
-            z-index: 0;
-            transition: opacity 0.2s ease-in-out;
-        }
-
-        iframe.app-frame.active {
-            visibility: visible;
-            opacity: 1;
+        /* --- VISTA 1: DASHBOARD (Diseño de Tarjetas) --- */
+        #view-dashboard {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding-top: 50px;
+            background: var(--bg-dark);
+            transition: opacity 0.3s;
             z-index: 10;
         }
 
-        /* Spinner de carga */
-        .loader {
-            position: absolute; top: 50%; left: 50%;
-            transform: translate(-50%, -50%);
-            color: var(--brand-color);
-            font-size: 2rem;
+        .dashboard-header { text-align: center; margin-bottom: 50px; animation: fadeInDown 0.8s ease; }
+        .dashboard-header h1 { font-size: 3rem; margin: 0; letter-spacing: -1px; }
+        .dashboard-header span { color: var(--brand-color); }
+        .dashboard-subtitle { color: var(--text-sec); font-size: 1.2rem; margin-top: 10px; }
+
+        .apps-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            width: 90%;
+            max-width: 1200px;
+            padding-bottom: 50px;
         }
+
+        .app-card {
+            background: var(--bg-panel);
+            border-radius: 20px;
+            padding: 40px 30px;
+            text-align: center;
+            border: 1px solid #333;
+            transition: transform 0.3s, box-shadow 0.3s;
+            position: relative;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            height: 280px;
+        }
+
+        .app-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(197, 13, 35, 0.2);
+            border-color: var(--brand-color);
+        }
+
+        .card-icon { font-size: 4rem; margin-bottom: 20px; color: var(--text-sec); transition: color 0.3s; }
+        .app-card:hover .card-icon { color: var(--brand-color); }
+        .card-title { font-size: 1.8rem; font-weight: bold; margin-bottom: 10px; color: white; }
+        .card-desc { font-size: 0.95rem; color: var(--text-sec); line-height: 1.5; margin-bottom: 20px; }
+        .launch-btn {
+            background: transparent; border: 2px solid var(--text-sec); color: var(--text-sec);
+            padding: 10px 25px; border-radius: 50px; font-weight: bold;
+            text-transform: uppercase; font-size: 0.8rem; transition: all 0.3s; align-self: center;
+        }
+        .app-card:hover .launch-btn { background: var(--brand-color); border-color: var(--brand-color); color: white; }
+
+        /* --- VISTA 2, 3, 4: IFRAMES (Persistencia) --- */
+        .app-frame {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            border: none;
+            background: white;
+            /* Truco para ocultar sin reiniciar */
+            visibility: hidden;
+            opacity: 0;
+            z-index: 0;
+            pointer-events: none; /* Evita clics cuando está oculto */
+        }
+
+        .app-frame.active {
+            visibility: visible;
+            opacity: 1;
+            z-index: 20;
+            pointer-events: auto;
+        }
+        
+        /* Ocultar el Dashboard cuando un frame está activo */
+        #view-dashboard.hidden {
+            display: none;
+        }
+
+        @keyframes fadeInDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
 
-    <nav class="sidebar">
-        <div class="brand">
-            <i class="fas fa-cubes"></i> GenFiler <span>Suite</span>
+    <nav class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <i class="fas fa-layer-group" style="color:var(--brand-color); font-size: 1.5rem;"></i>
+            <span class="logo-text">GenFiler Suite</span>
         </div>
 
-        <div class="menu">
-            <button class="menu-btn active" onclick="switchApp('dashboard', this)">
-                <i class="fas fa-home"></i> Inicio
+        <div class="menu-items">
+            <button class="menu-btn active" onclick="goHome()" title="Inicio">
+                <i class="fas fa-home"></i> <span>Inicio</span>
             </button>
-
-            <button class="menu-btn" onclick="switchApp('genfiler', this)">
-                <i class="far fa-file-pdf" style="color:#e74c3c"></i> GenFiler PDF
+            <button class="menu-btn" onclick="openApp('genfiler')" title="GenFiler PDF">
+                <i class="far fa-file-pdf"></i> <span>GenFiler PDF</span>
             </button>
-
-            <button class="menu-btn" onclick="switchApp('spsa', this)">
-                <i class="fas fa-chart-pie" style="color:#f1c40f"></i> SPSA Filer
+            <button class="menu-btn" onclick="openApp('spsa')" title="SPSA Filer">
+                <i class="fas fa-chart-pie"></i> <span>SPSA Filer</span>
             </button>
-
-            <button class="menu-btn" onclick="switchApp('xlsx', this)">
-                <i class="fas fa-file-excel" style="color:#2ecc71"></i> XLSX Filer
+            <button class="menu-btn" onclick="openApp('xlsx')" title="XLSX Filer">
+                <i class="fas fa-file-excel"></i> <span>XLSX Filer</span>
             </button>
         </div>
 
-        <div style="padding: 20px; font-size: 0.8rem; color: #666; text-align: center;">
-            v2.0 Connected
-        </div>
+        <button class="toggle-btn" onclick="toggleSidebar()">
+            <i class="fas fa-chevron-left" id="toggleIcon"></i>
+        </button>
     </nav>
 
-    <main class="main-stage">
-        <div class="loader"><i class="fas fa-circle-notch fa-spin"></i> Cargando recursos...</div>
+    <main class="main-content">
+        
+        <div id="view-dashboard">
+            <div class="dashboard-header">
+                <h1>GenFiler <span>Ecosystem</span> v2.0</h1>
+                <p class="dashboard-subtitle">Centro de control unificado de procesamiento de datos</p>
+            </div>
 
-        <iframe id="frame-dashboard" class="app-frame active" 
-            srcdoc="<body style='font-family:sans-serif; display:flex; justify-content:center; align-items:center; height:100vh; background:#f4f4f4; color:#333; text-align:center;'><div><h1 style='color:#C50D23; font-size:3rem;'>Bienvenido a GenFiler</h1><p>Selecciona una herramienta del menú para comenzar.</p></div></body>">
-        </iframe>
+            <div class="apps-grid">
+                <div class="app-card" onclick="openApp('genfiler')">
+                    <div>
+                        <div class="card-icon"><i class="far fa-file-pdf"></i></div>
+                        <div class="card-title">GenFiler PDF</div>
+                        <div class="card-desc">Procesamiento de documentos, extracción de coordenadas y generación de etiquetas.</div>
+                    </div>
+                    <span class="launch-btn">Iniciar App</span>
+                </div>
 
-        <iframe id="frame-genfiler" class="app-frame" 
-            src="https://almacenptlg-a11y.github.io/GenFiler/">
-        </iframe>
+                <div class="app-card" onclick="openApp('spsa')">
+                    <div>
+                        <div class="card-icon"><i class="fas fa-chart-pie"></i></div>
+                        <div class="card-title">SPSA Filer</div>
+                        <div class="card-desc">Análisis de archivos CSV y generación de reportes consolidados masivos.</div>
+                    </div>
+                    <span class="launch-btn">Iniciar App</span>
+                </div>
 
-        <iframe id="frame-spsa" class="app-frame" 
-            src="https://almacenptlg-a11y.github.io/SPSA_Filer/">
-        </iframe>
+                <div class="app-card" onclick="openApp('xlsx')">
+                    <div>
+                        <div class="card-icon"><i class="fas fa-file-excel"></i></div>
+                        <div class="card-title">XLSX Filer</div>
+                        <div class="card-desc">Herramientas avanzadas para Excel, automatización y transformación de datos.</div>
+                    </div>
+                    <span class="launch-btn">Iniciar App</span>
+                </div>
+            </div>
+            
+            <footer style="margin-top: auto; padding: 20px; color: #555; font-size: 0.8rem;">
+                &copy; 2026 GenFiler Systems - Tacna, Perú
+            </footer>
+        </div>
 
-        <iframe id="frame-xlsx" class="app-frame" 
-            src="https://almacenptlg-a11y.github.io/XLSX_Reporter/">
-        </iframe>
+        <iframe id="frame-genfiler" class="app-frame" src="https://almacenptlg-a11y.github.io/GenFiler/"></iframe>
+
+        <iframe id="frame-spsa" class="app-frame" src="https://almacenptlg-a11y.github.io/SPSA_Filer/"></iframe>
+
+        <iframe id="frame-xlsx" class="app-frame" src="https://almacenptlg-a11y.github.io/XLSX_Reporter/"></iframe>
 
     </main>
 
     <script>
-        function switchApp(appId, btnElement) {
-            // 1. Manejo visual de botones (Sidebar)
+        // Lógica de Navegación
+        function openApp(appId) {
+            // 1. Actualizar botones del sidebar
             document.querySelectorAll('.menu-btn').forEach(btn => btn.classList.remove('active'));
-            if(btnElement) btnElement.classList.add('active');
+            // Encontrar el botón correspondiente (incluso si clickeamos desde el dashboard)
+            const sidebarBtn = document.querySelector(`.menu-btn[onclick="openApp('${appId}')"]`);
+            if(sidebarBtn) sidebarBtn.classList.add('active');
 
-            // 2. Manejo de Iframe (La parte clave de la persistencia)
-            // Ocultamos todos (quitamos clase active) pero NO cambiamos el SRC, por lo que no se recargan
+            // 2. Gestionar Vistas
+            // Ocultar Dashboard
+            document.getElementById('view-dashboard').classList.add('hidden');
+            
+            // Ocultar todos los frames (sin recargarlos)
             document.querySelectorAll('.app-frame').forEach(frame => {
                 frame.classList.remove('active');
             });
 
-            // Mostramos el seleccionado
-            const selectedFrame = document.getElementById('frame-' + appId);
-            if(selectedFrame) {
-                selectedFrame.classList.add('active');
+            // Mostrar el frame seleccionado
+            const targetFrame = document.getElementById(`frame-${appId}`);
+            if(targetFrame) {
+                targetFrame.classList.add('active');
+            }
+        }
+
+        function goHome() {
+            // Activar botón Home
+            document.querySelectorAll('.menu-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelector('.menu-btn[onclick="goHome()"]').classList.add('active');
+
+            // Mostrar Dashboard, ocultar frames
+            document.getElementById('view-dashboard').classList.remove('hidden');
+            document.querySelectorAll('.app-frame').forEach(frame => {
+                frame.classList.remove('active');
+            });
+        }
+
+        // Lógica del Sidebar Contraíble
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const icon = document.getElementById('toggleIcon');
+            
+            sidebar.classList.toggle('collapsed');
+            
+            if (sidebar.classList.contains('collapsed')) {
+                icon.classList.remove('fa-chevron-left');
+                icon.classList.add('fa-chevron-right');
+            } else {
+                icon.classList.remove('fa-chevron-right');
+                icon.classList.add('fa-chevron-left');
             }
         }
     </script>
-
 </body>
 </html>
