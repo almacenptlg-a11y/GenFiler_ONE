@@ -527,7 +527,7 @@
             let greeting = 'Buenos días';
             if (hours >= 12 && hours < 19) { greeting = 'Buenas tardes'; } else if (hours >= 19) { greeting = 'Buenas noches'; }
             
-            const nombreEmpleado = localStorage.getItem('genFilerUserName', data.nombre) || 'Equipo';
+            const nombreEmpleado = localStorage.getItem('genFilerUserName') || 'Equipo';
           
             document.getElementById('greetingText').textContent = greeting + ', ' + nombreEmpleado;
             document.getElementById('clockText').textContent = now.toLocaleTimeString('es-PE', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
