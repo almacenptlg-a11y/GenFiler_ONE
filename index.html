@@ -14,7 +14,6 @@
             --sidebar-collapsed: 70px;
             --transition-speed: 0.3s;
             
-            /* Variables Modo Oscuro */
             --bg-dark: #121212;
             --bg-panel: #1e1e1e;
             --text-main: #ecf0f1;
@@ -35,41 +34,26 @@
         body { margin: 0; padding: 0; font-family: 'Segoe UI', system-ui, sans-serif; background-color: var(--bg-dark); color: var(--text-main); overflow: hidden; display: flex; height: 100vh; transition: background-color 0.3s, color 0.3s; }
 
         /* --- PANTALLA DE LOGIN --- */
-        #login-screen {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background-color: var(--bg-dark); z-index: 9999;
-            display: flex; flex-direction: column; justify-content: center; align-items: center;
-            transition: opacity 0.5s ease, visibility 0.5s ease;
-        }
-
-        .login-box {
-            background: var(--bg-panel); padding: 50px 40px; border-radius: 20px;
-            border: 1px solid var(--border-color); text-align: center;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.3); width: 90%; max-width: 400px;
-            animation: fadeInDown 0.8s ease;
-        }
-
+        #login-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: var(--bg-dark); z-index: 9999; display: flex; flex-direction: column; justify-content: center; align-items: center; transition: opacity 0.5s ease, visibility 0.5s ease; }
+        .login-box { background: var(--bg-panel); padding: 50px 40px; border-radius: 20px; border: 1px solid var(--border-color); text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.3); width: 90%; max-width: 400px; animation: fadeInDown 0.8s ease; position: relative; }
         .login-box svg { width: 120px; margin-bottom: 20px; filter: drop-shadow(0 0 10px rgba(197, 13, 35, 0.2)); }
         .login-box h2 { margin: 0 0 10px 0; color: var(--text-main); font-size: 1.8rem; }
         .login-box p { color: var(--text-sec); margin-bottom: 30px; font-size: 0.95rem; }
-
         .input-group { position: relative; margin-bottom: 20px; }
         .input-group i { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: var(--text-sec); }
-        .input-group input {
-            width: 100%; padding: 15px 15px 15px 45px; border-radius: 10px;
-            border: 2px solid var(--border-color); background: var(--bg-dark);
-            color: var(--text-main); font-size: 1rem; outline: none; transition: all 0.3s; box-sizing: border-box;
-        }
+        .input-group input { width: 100%; padding: 15px 15px 15px 45px; border-radius: 10px; border: 2px solid var(--border-color); background: var(--bg-dark); color: var(--text-main); font-size: 1rem; outline: none; transition: all 0.3s; box-sizing: border-box; }
         .input-group input:focus { border-color: var(--brand-color); }
-        
-        .login-btn {
-            width: 100%; background: var(--brand-color); color: white; border: none;
-            padding: 15px; border-radius: 10px; font-weight: bold; font-size: 1rem;
-            cursor: pointer; transition: background 0.3s, opacity 0.3s; text-transform: uppercase; letter-spacing: 1px;
-        }
+        .login-btn { width: 100%; background: var(--brand-color); color: white; border: none; padding: 15px; border-radius: 10px; font-weight: bold; font-size: 1rem; cursor: pointer; transition: background 0.3s, opacity 0.3s; text-transform: uppercase; letter-spacing: 1px; }
         .login-btn:hover { background: var(--brand-dark); }
         .login-btn:disabled { opacity: 0.7; cursor: not-allowed; }
         .login-error { color: #ff4757; font-size: 0.9rem; margin-top: 15px; display: none; }
+
+        /* --- NUEVO: MODAL DE PERFIL --- */
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.7); z-index: 9998; display: flex; justify-content: center; align-items: center; opacity: 1; transition: opacity 0.3s ease; backdrop-filter: blur(5px); }
+        .modal-overlay.hidden { opacity: 0; pointer-events: none; }
+        .close-btn { position: absolute; top: 15px; right: 20px; background: none; border: none; color: var(--text-sec); font-size: 1.5rem; cursor: pointer; transition: color 0.3s; }
+        .close-btn:hover { color: var(--brand-color); }
+        .success-msg { color: #2ecc71; font-size: 0.95rem; margin-top: 15px; display: none; font-weight: bold; }
 
         /* --- SIDEBAR --- */
         .sidebar { width: var(--sidebar-width); background-color: var(--bg-panel); border-right: 1px solid var(--border-color); display: flex; flex-direction: column; transition: width var(--transition-speed) ease, background-color 0.3s; z-index: 1000; flex-shrink: 0; position: relative; }
@@ -89,7 +73,6 @@
         .menu-btn:hover { background-color: var(--hover-bg); color: var(--text-main); }
         .menu-btn.active { background-color: rgba(197, 13, 35, 0.1); color: var(--brand-color); border-right: 4px solid var(--brand-color); font-weight: bold; }
 
-        /* Tooltips */
         .sidebar.collapsed .menu-btn::after { content: attr(data-tooltip); position: absolute; left: 75px; top: 50%; transform: translateY(-50%); background-color: var(--bg-panel); color: var(--text-main); padding: 8px 12px; border-radius: 6px; border: 1px solid var(--border-color); white-space: nowrap; opacity: 0; visibility: hidden; transition: opacity 0.2s ease, transform 0.2s ease; z-index: 1000; box-shadow: 0 4px 10px rgba(0,0,0,0.2); font-size: 0.9rem; pointer-events: none; }
         .sidebar.collapsed .menu-btn:hover::after { opacity: 1; visibility: visible; transform: translateY(-50%) translateX(5px); }
 
@@ -169,10 +152,41 @@
                 </div>
                 <div class="input-group">
                     <i class="fas fa-lock"></i>
-                    <input type="password" id="pinInput" placeholder="Código de acceso" required autocomplete="off">
+                    <input type="password" id="pinInput" placeholder="Contraseña" required autocomplete="off">
                 </div>
                 <button type="submit" class="login-btn" id="loginSubmitBtn">Ingresar al Sistema</button>
-                <div class="login-error" id="loginError">Usuario o código incorrectos.</div>
+                <div class="login-error" id="loginError">Usuario o contraseña incorrectos.</div>
+            </form>
+        </div>
+    </div>
+
+    <div id="profile-modal" class="modal-overlay hidden">
+        <div class="login-box" style="padding: 40px 30px;">
+            <button class="close-btn" onclick="closeProfileModal()"><i class="fas fa-times"></i></button>
+            <h2 style="margin-bottom: 5px;">Mi Perfil</h2>
+            <p style="margin-bottom: 25px;">Actualiza tus datos de acceso</p>
+            
+            <form id="profileForm" onsubmit="handleProfileUpdate(event)">
+                <div class="input-group">
+                    <i class="fas fa-lock" style="color: var(--brand-color);"></i>
+                    <input type="password" id="currentPassInput" placeholder="Contraseña actual (Requerida)" required>
+                </div>
+                
+                <hr style="border: 0; border-top: 1px solid var(--border-color); margin: 25px 0;">
+                <p style="font-size: 0.85rem; color: var(--text-sec); margin-bottom: 15px; text-align: left;">Deja en blanco lo que NO desees cambiar:</p>
+                
+                <div class="input-group">
+                    <i class="fas fa-user-edit"></i>
+                    <input type="text" id="newIdInput" placeholder="Nuevo Usuario (Opcional)">
+                </div>
+                <div class="input-group">
+                    <i class="fas fa-key"></i>
+                    <input type="password" id="newPassInput" placeholder="Nueva Contraseña (Opcional)">
+                </div>
+                
+                <button type="submit" class="login-btn" id="profileSubmitBtn">Guardar Cambios</button>
+                <div class="login-error" id="profileError"></div>
+                <div class="success-msg" id="profileSuccess">¡Datos actualizados con éxito!</div>
             </form>
         </div>
     </div>
@@ -209,6 +223,9 @@
         </div>
 
         <div class="sidebar-footer">
+            <button class="menu-btn" onclick="openProfileModal()" data-tooltip="Mi Perfil">
+                <i class="fas fa-user-edit"></i> <span>Mi Perfil</span>
+            </button>
             <button class="menu-btn logout-btn" onclick="logout()" data-tooltip="Cerrar Sesión">
                 <i class="fas fa-sign-out-alt"></i> <span>Cerrar Sesión</span>
             </button>
@@ -305,7 +322,7 @@
     </main>
 
     <script>
-       const API_URL = "https://script.google.com/macros/s/AKfycbxOsYSJn8JcKxCxBIpLqajGAVMr5axdVXCBpWwI7dqFmGlQfahRQghwj8uCkLVw8MwS/exec";
+        const API_URL = "https://script.google.com/macros/s/AKfycbxOsYSJn8JcKxCxBIpLqajGAVMr5axdVXCBpWwI7dqFmGlQfahRQghwj8uCkLVw8MwS/exec";
 
         function checkAuth() {
             const isAuth = localStorage.getItem('isGenFilerAuth');
@@ -323,21 +340,14 @@
             }
         }
 
-        // --- NUEVO: FUNCIÓN SILENCIOSA PARA ENVIAR LOGS ---
         function logActivity(actionDesc) {
             const userName = localStorage.getItem('genFilerUserName');
             const userId = localStorage.getItem('genFilerUserId');
-            
-            if (!userName || !userId) return; // No enviar si no hay sesión iniciada
+            if (!userName || !userId) return; 
             
             fetch(API_URL, {
                 method: 'POST',
-                body: JSON.stringify({
-                    actionType: 'log_action', // Le decimos al puente que es un registro
-                    usuario: userId,
-                    nombre: userName,
-                    actionDesc: actionDesc
-                })
+                body: JSON.stringify({ actionType: 'log_action', usuario: userId, nombre: userName, actionDesc: actionDesc })
             }).catch(e => console.error("Error enviando log:", e));
         }
 
@@ -364,8 +374,7 @@
                 if (data.status === 'success') {
                     localStorage.setItem('isGenFilerAuth', 'true');
                     localStorage.setItem('genFilerUserName', data.nombre);
-                    localStorage.setItem('genFilerUserRole', data.rol);
-                    localStorage.setItem('genFilerUserId', data.usuarioId); // Guardamos el ID del usuario
+                    localStorage.setItem('genFilerUserId', data.usuarioId);
 
                     document.getElementById('userInput').value = '';
                     document.getElementById('pinInput').value = '';
@@ -373,7 +382,7 @@
                     checkAuth();
                     updateClockAndGreeting();
                 } else {
-                    showLoginError('Usuario o código incorrectos.');
+                    showLoginError('Usuario o contraseña incorrectos.');
                 }
             } catch (error) {
                 showLoginError('Error de conexión con el servidor.');
@@ -387,24 +396,93 @@
             const errorMsg = document.getElementById('loginError');
             errorMsg.textContent = msg;
             errorMsg.style.display = 'block';
-            
             const loginBox = document.querySelector('.login-box');
             loginBox.style.transform = 'translateX(10px)';
             setTimeout(() => loginBox.style.transform = 'translateX(-10px)', 100);
             setTimeout(() => loginBox.style.transform = 'translateX(0)', 200);
         }
 
-        function logout() {
-            logActivity("Cerró sesión"); // Registrar la salida
+        // --- NUEVO: LÓGICA DEL MODAL DE PERFIL ---
+        function openProfileModal() {
+            // Pre-llenar el campo de "Nuevo Usuario" con el actual para que sea fácil editarlo
+            document.getElementById('newIdInput').value = localStorage.getItem('genFilerUserId') || '';
+            document.getElementById('currentPassInput').value = '';
+            document.getElementById('newPassInput').value = '';
+            document.getElementById('profileError').style.display = 'none';
+            document.getElementById('profileSuccess').style.display = 'none';
             
+            document.getElementById('profile-modal').classList.remove('hidden');
+        }
+
+        function closeProfileModal() {
+            document.getElementById('profile-modal').classList.add('hidden');
+        }
+
+        async function handleProfileUpdate(event) {
+            event.preventDefault();
+            
+            const currentPass = document.getElementById('currentPassInput').value;
+            const newId = document.getElementById('newIdInput').value;
+            const newPass = document.getElementById('newPassInput').value;
+            
+            const currentId = localStorage.getItem('genFilerUserId');
+            const errorMsg = document.getElementById('profileError');
+            const successMsg = document.getElementById('profileSuccess');
+            const submitBtn = document.getElementById('profileSubmitBtn');
+
+            errorMsg.style.display = 'none';
+            successMsg.style.display = 'none';
+            submitBtn.textContent = 'Guardando...';
+            submitBtn.disabled = true;
+
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    body: JSON.stringify({ 
+                        actionType: 'update_profile', 
+                        currentId: currentId, 
+                        currentPass: currentPass,
+                        newId: newId,
+                        newPass: newPass
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.status === 'success') {
+                    // Actualizamos la sesión con el nuevo usuario si lo cambió
+                    localStorage.setItem('genFilerUserId', data.newId);
+                    
+                    document.getElementById('currentPassInput').value = '';
+                    document.getElementById('newPassInput').value = '';
+                    
+                    successMsg.style.display = 'block';
+                    setTimeout(() => {
+                        closeProfileModal();
+                        successMsg.style.display = 'none';
+                    }, 2000); // Cierra el modal solo después de 2 segundos de éxito
+                } else {
+                    errorMsg.textContent = data.message || 'Error al actualizar.';
+                    errorMsg.style.display = 'block';
+                }
+            } catch (error) {
+                errorMsg.textContent = 'Error de conexión con el servidor.';
+                errorMsg.style.display = 'block';
+            } finally {
+                submitBtn.textContent = 'Guardar Cambios';
+                submitBtn.disabled = false;
+            }
+        }
+
+        function logout() {
+            logActivity("Cerró sesión");
             setTimeout(() => {
                 localStorage.removeItem('isGenFilerAuth');
                 localStorage.removeItem('genFilerUserName');
-                localStorage.removeItem('genFilerUserRole');
                 localStorage.removeItem('genFilerUserId');
                 checkAuth();
                 goHome();
-            }, 500); // Pequeño retraso para dar tiempo a que se envíe el log
+            }, 500);
         }
 
         window.addEventListener('DOMContentLoaded', () => {
@@ -482,8 +560,7 @@
                 targetFrame.classList.add('active');
                 if (!targetFrame.getAttribute('src')) {
                     
-                    // --- NUEVO: REGISTRAR QUE ABRIÓ UNA APP ---
-                    let nombreAppLegible = appId.toUpperCase(); // Por defecto
+                    let nombreAppLegible = appId.toUpperCase();
                     if (appId === 'genfiler') nombreAppLegible = "GenFiler PDF";
                     if (appId === 'spsa') nombreAppLegible = "SPSA Filer";
                     if (appId === 'xlsx') nombreAppLegible = "XLSX Reporter";
@@ -514,7 +591,6 @@
                         targetFrame.removeAttribute('src'); openApp(appId, false);
                     };
                 } else {
-                    // Si el usuario vuelve a una pestaña que ya estaba cargada
                     logActivity("Volvió a la pestaña de: " + appId.toUpperCase());
                 }
             }
