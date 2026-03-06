@@ -305,8 +305,7 @@
     </main>
 
     <script>
-        // --- CONEXIÓN CON TU GOOGLE SHEET (API URL) ---
-        const API_URL = "https://script.google.com/macros/s/AKfycbxOsYSJn8JcKxCxBIpLqajGAVMr5axdVXCBpWwI7dqFmGlQfahRQghwj8uCkLVw8MwS/exec";
+       const API_URL = "https://script.google.com/macros/s/AKfycbxOsYSJn8JcKxCxBIpLqajGAVMr5axdVXCBpWwI7dqFmGlQfahRQghwj8uCkLVw8MwS/exec";
 
         function checkAuth() {
             const isAuth = localStorage.getItem('isGenFilerAuth');
@@ -324,7 +323,24 @@
             }
         }
 
-        // --- NUEVO: FUNCIÓN ASÍNCRONA PARA VALIDAR EN EXCEL ---
+        // --- NUEVO: FUNCIÓN SILENCIOSA PARA ENVIAR LOGS ---
+        function logActivity(actionDesc) {
+            const userName = localStorage.getItem('genFilerUserName');
+            const userId = localStorage.getItem('genFilerUserId');
+            
+            if (!userName || !userId) return; // No enviar si no hay sesión iniciada
+            
+            fetch(API_URL, {
+                method: 'POST',
+                body: JSON.stringify({
+                    actionType: 'log_action', // Le decimos al puente que es un registro
+                    usuario: userId,
+                    nombre: userName,
+                    actionDesc: actionDesc
+                })
+            }).catch(e => console.error("Error enviando log:", e));
+        }
+
         async function handleLogin(event) {
             event.preventDefault();
             
@@ -333,41 +349,35 @@
             const errorMsg = document.getElementById('loginError');
             const submitBtn = document.getElementById('loginSubmitBtn');
 
-            // Estado de carga visual
             errorMsg.style.display = 'none';
             submitBtn.textContent = 'Verificando...';
             submitBtn.disabled = true;
 
             try {
-                // Enviar datos al "puente" de Google Apps Script
                 const response = await fetch(API_URL, {
                     method: 'POST',
-                    body: JSON.stringify({ usuario: userStr, password: pinStr })
+                    body: JSON.stringify({ actionType: 'login', usuario: userStr, password: pinStr })
                 });
 
-                // Recibir respuesta
                 const data = await response.json();
 
                 if (data.status === 'success') {
-                    // Guardar sesión y datos del empleado
                     localStorage.setItem('isGenFilerAuth', 'true');
                     localStorage.setItem('genFilerUserName', data.nombre);
                     localStorage.setItem('genFilerUserRole', data.rol);
+                    localStorage.setItem('genFilerUserId', data.usuarioId); // Guardamos el ID del usuario
 
-                    // Limpiar formulario
                     document.getElementById('userInput').value = '';
                     document.getElementById('pinInput').value = '';
 
                     checkAuth();
-                    updateClockAndGreeting(); // Forzar actualización del saludo con el nombre
+                    updateClockAndGreeting();
                 } else {
                     showLoginError('Usuario o código incorrectos.');
                 }
             } catch (error) {
                 showLoginError('Error de conexión con el servidor.');
-                console.error("Error Fetch:", error);
             } finally {
-                // Restaurar botón
                 submitBtn.textContent = 'Ingresar al Sistema';
                 submitBtn.disabled = false;
             }
@@ -378,7 +388,6 @@
             errorMsg.textContent = msg;
             errorMsg.style.display = 'block';
             
-            // Animación de error
             const loginBox = document.querySelector('.login-box');
             loginBox.style.transform = 'translateX(10px)';
             setTimeout(() => loginBox.style.transform = 'translateX(-10px)', 100);
@@ -386,19 +395,20 @@
         }
 
         function logout() {
-            // Borrar todos los datos de sesión
-            localStorage.removeItem('isGenFilerAuth');
-            localStorage.removeItem('genFilerUserName');
-            localStorage.removeItem('genFilerUserRole');
+            logActivity("Cerró sesión"); // Registrar la salida
             
-            checkAuth();
-            goHome();
+            setTimeout(() => {
+                localStorage.removeItem('isGenFilerAuth');
+                localStorage.removeItem('genFilerUserName');
+                localStorage.removeItem('genFilerUserRole');
+                localStorage.removeItem('genFilerUserId');
+                checkAuth();
+                goHome();
+            }, 500); // Pequeño retraso para dar tiempo a que se envíe el log
         }
 
-        // --- LÓGICA EXISTENTE ---
         window.addEventListener('DOMContentLoaded', () => {
             checkAuth();
-
             const savedTheme = localStorage.getItem('theme');
             const themeIcon = document.getElementById('themeIcon');
             const themeText = document.getElementById('themeText');
@@ -433,16 +443,13 @@
             }
         }
 
-        // --- NUEVO: SALUDO CON EL NOMBRE DEL EXCEL ---
         function updateClockAndGreeting() {
             const now = new Date();
             const hours = now.getHours();
             let greeting = 'Buenos días';
             if (hours >= 12 && hours < 19) { greeting = 'Buenas tardes'; } else if (hours >= 19) { greeting = 'Buenas noches'; }
             
-            // Buscar el nombre en memoria, si no existe usar "Equipo"
             const nombreEmpleado = localStorage.getItem('genFilerUserName') || 'Equipo';
-            
             document.getElementById('greetingText').textContent = greeting + ', ' + nombreEmpleado;
             document.getElementById('clockText').textContent = now.toLocaleTimeString('es-PE', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
         }
@@ -474,6 +481,16 @@
             if(targetFrame) {
                 targetFrame.classList.add('active');
                 if (!targetFrame.getAttribute('src')) {
+                    
+                    // --- NUEVO: REGISTRAR QUE ABRIÓ UNA APP ---
+                    let nombreAppLegible = appId.toUpperCase(); // Por defecto
+                    if (appId === 'genfiler') nombreAppLegible = "GenFiler PDF";
+                    if (appId === 'spsa') nombreAppLegible = "SPSA Filer";
+                    if (appId === 'xlsx') nombreAppLegible = "XLSX Reporter";
+                    if (appId === 'holi') nombreAppLegible = "Holi Filer";
+                    
+                    logActivity("Abrió la aplicación: " + nombreAppLegible);
+                    
                     const overlay = document.getElementById('loading-overlay');
                     const spinner = document.getElementById('loading-spinner');
                     const text = document.getElementById('loading-text');
@@ -496,6 +513,9 @@
                     document.getElementById('retry-btn').onclick = function() {
                         targetFrame.removeAttribute('src'); openApp(appId, false);
                     };
+                } else {
+                    // Si el usuario vuelve a una pestaña que ya estaba cargada
+                    logActivity("Volvió a la pestaña de: " + appId.toUpperCase());
                 }
             }
 
