@@ -23,7 +23,6 @@
             --hover-bg: rgba(255,255,255,0.05);
         }
 
-        /* Variables Modo Claro */
         body.light-mode {
             --bg-dark: #f0f2f5;
             --bg-panel: #ffffff;
@@ -33,121 +32,94 @@
             --hover-bg: rgba(0,0,0,0.05);
         }
 
-        body {
-            margin: 0; padding: 0; font-family: 'Segoe UI', system-ui, sans-serif;
-            background-color: var(--bg-dark); color: var(--text-main);
-            overflow: hidden; display: flex; height: 100vh;
-            transition: background-color 0.3s, color 0.3s;
+        body { margin: 0; padding: 0; font-family: 'Segoe UI', system-ui, sans-serif; background-color: var(--bg-dark); color: var(--text-main); overflow: hidden; display: flex; height: 100vh; transition: background-color 0.3s, color 0.3s; }
+
+        /* --- PANTALLA DE LOGIN --- */
+        #login-screen {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: var(--bg-dark); z-index: 9999;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            transition: opacity 0.5s ease, visibility 0.5s ease;
         }
 
-        /* --- SIDEBAR (Menú Lateral) --- */
-        .sidebar {
-            width: var(--sidebar-width); background-color: var(--bg-panel);
-            border-right: 1px solid var(--border-color); display: flex;
-            flex-direction: column; transition: width var(--transition-speed) ease, background-color 0.3s;
-            z-index: 1000; flex-shrink: 0; position: relative;
+        .login-box {
+            background: var(--bg-panel); padding: 50px 40px; border-radius: 20px;
+            border: 1px solid var(--border-color); text-align: center;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.3); width: 90%; max-width: 400px;
+            animation: fadeInDown 0.8s ease;
         }
 
+        .login-box svg { width: 120px; margin-bottom: 20px; filter: drop-shadow(0 0 10px rgba(197, 13, 35, 0.2)); }
+        .login-box h2 { margin: 0 0 10px 0; color: var(--text-main); font-size: 1.8rem; }
+        .login-box p { color: var(--text-sec); margin-bottom: 30px; font-size: 0.95rem; }
+
+        .input-group { position: relative; margin-bottom: 20px; }
+        .input-group i { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: var(--text-sec); }
+        .input-group input {
+            width: 100%; padding: 15px 15px 15px 45px; border-radius: 10px;
+            border: 2px solid var(--border-color); background: var(--bg-dark);
+            color: var(--text-main); font-size: 1rem; outline: none; transition: all 0.3s; box-sizing: border-box;
+        }
+        .input-group input:focus { border-color: var(--brand-color); }
+        
+        .login-btn {
+            width: 100%; background: var(--brand-color); color: white; border: none;
+            padding: 15px; border-radius: 10px; font-weight: bold; font-size: 1rem;
+            cursor: pointer; transition: background 0.3s, opacity 0.3s; text-transform: uppercase; letter-spacing: 1px;
+        }
+        .login-btn:hover { background: var(--brand-dark); }
+        .login-btn:disabled { opacity: 0.7; cursor: not-allowed; }
+        .login-error { color: #ff4757; font-size: 0.9rem; margin-top: 15px; display: none; }
+
+        /* --- SIDEBAR --- */
+        .sidebar { width: var(--sidebar-width); background-color: var(--bg-panel); border-right: 1px solid var(--border-color); display: flex; flex-direction: column; transition: width var(--transition-speed) ease, background-color 0.3s; z-index: 1000; flex-shrink: 0; position: relative; }
         .sidebar.collapsed { width: var(--sidebar-collapsed); }
-
-        .sidebar-header {
-            height: 80px; display: flex; align-items: center; padding: 0 15px;
-            border-bottom: 2px solid var(--brand-color); overflow: hidden;
-            white-space: nowrap; background: rgba(0,0,0,0.05);
-        }
-
+        .sidebar-header { height: 80px; display: flex; align-items: center; padding: 0 15px; border-bottom: 2px solid var(--brand-color); overflow: hidden; white-space: nowrap; background: rgba(0,0,0,0.05); }
         .sidebar-logo-svg { width: 50px; min-width: 50px; height: auto; transition: all 0.3s; }
         .logo-text { font-weight: bold; font-size: 1.1rem; margin-left: 15px; opacity: 1; transition: opacity 0.2s; color: var(--text-main); letter-spacing: 0.5px; }
-        
         .sidebar.collapsed .logo-text { opacity: 0; pointer-events: none; width: 0; }
         .sidebar.collapsed .sidebar-header { justify-content: center; padding: 0; }
         .sidebar.collapsed .sidebar-logo-svg { width: 40px; }
-
         .menu-items { flex-grow: 1; padding-top: 20px; display: flex; flex-direction: column; }
-
-        .menu-btn {
-            background: transparent; border: none; color: var(--text-sec); width: 100%;
-            padding: 15px 20px; text-align: left; cursor: pointer; display: flex;
-            align-items: center; font-size: 1rem; transition: all 0.2s; position: relative;
-        }
-
+        .menu-btn { background: transparent; border: none; color: var(--text-sec); width: 100%; padding: 15px 20px; text-align: left; cursor: pointer; display: flex; align-items: center; font-size: 1rem; transition: all 0.2s; position: relative; }
         .menu-btn i { width: 30px; text-align: center; font-size: 1.2rem; }
         .menu-btn span { margin-left: 10px; white-space: nowrap; opacity: 1; transition: opacity 0.2s; }
-
         .sidebar.collapsed .menu-btn span { opacity: 0; width: 0; overflow: hidden; }
         .sidebar.collapsed .menu-btn { justify-content: center; padding: 15px 0; }
-
         .menu-btn:hover { background-color: var(--hover-bg); color: var(--text-main); }
         .menu-btn.active { background-color: rgba(197, 13, 35, 0.1); color: var(--brand-color); border-right: 4px solid var(--brand-color); font-weight: bold; }
 
-        /* NUEVO: TOOLTIPS CSS MEJORADOS */
-        .sidebar.collapsed .menu-btn::after {
-            content: attr(data-tooltip);
-            position: absolute;
-            left: 75px;
-            top: 50%;
-            transform: translateY(-50%);
-            background-color: var(--bg-panel);
-            color: var(--text-main);
-            padding: 8px 12px;
-            border-radius: 6px;
-            border: 1px solid var(--border-color);
-            white-space: nowrap;
-            opacity: 0;
-            visibility: hidden;
-            transition: opacity 0.2s ease, transform 0.2s ease;
-            z-index: 1000;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-            font-size: 0.9rem;
-            pointer-events: none;
-        }
-        .sidebar.collapsed .menu-btn:hover::after {
-            opacity: 1;
-            visibility: visible;
-            transform: translateY(-50%) translateX(5px);
-        }
+        /* Tooltips */
+        .sidebar.collapsed .menu-btn::after { content: attr(data-tooltip); position: absolute; left: 75px; top: 50%; transform: translateY(-50%); background-color: var(--bg-panel); color: var(--text-main); padding: 8px 12px; border-radius: 6px; border: 1px solid var(--border-color); white-space: nowrap; opacity: 0; visibility: hidden; transition: opacity 0.2s ease, transform 0.2s ease; z-index: 1000; box-shadow: 0 4px 10px rgba(0,0,0,0.2); font-size: 0.9rem; pointer-events: none; }
+        .sidebar.collapsed .menu-btn:hover::after { opacity: 1; visibility: visible; transform: translateY(-50%) translateX(5px); }
 
         .sidebar-footer { border-top: 1px solid var(--border-color); display: flex; flex-direction: column; }
         .toggle-btn { background: rgba(0,0,0,0.03); border: none; color: var(--text-sec); padding: 15px; cursor: pointer; text-align: center; border-top: 1px solid var(--border-color); transition: all 0.3s; }
         .toggle-btn:hover { color: var(--text-main); background: var(--hover-bg); }
+        .logout-btn { color: #ff4757; }
+        .logout-btn:hover { background-color: rgba(255, 71, 87, 0.1); color: #ff4757; }
 
         /* --- MAIN AREA --- */
         .main-content { flex-grow: 1; position: relative; background-color: var(--bg-dark); overflow: hidden; transition: background-color 0.3s; }
-
-        #view-dashboard {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            overflow-y: auto; display: flex; flex-direction: column; align-items: center;
-            padding-top: 40px; background: var(--bg-dark); transition: opacity 0.3s, background-color 0.3s; z-index: 10;
-        }
-
+        #view-dashboard { position: absolute; top: 0; left: 0; width: 100%; height: 100%; overflow-y: auto; display: flex; flex-direction: column; align-items: center; padding-top: 40px; background: var(--bg-dark); transition: opacity 0.3s, background-color 0.3s; z-index: 10; }
         .dashboard-header { text-align: center; margin-bottom: 20px; animation: fadeInDown 0.8s ease; display: flex; flex-direction: column; align-items: center; }
         .dashboard-logo-svg { width: 180px; height: auto; margin-bottom: 20px; filter: drop-shadow(0 0 10px rgba(197, 13, 35, 0.2)); }
         .dashboard-header h1 { font-size: 2.5rem; margin: 0; letter-spacing: -1px; color: var(--text-main); }
         .dashboard-header span { color: var(--brand-color); }
         .dashboard-subtitle { color: var(--text-sec); font-size: 1.1rem; margin-top: 10px; }
 
-        /* NUEVO: RELOJ, SALUDO Y BUSCADOR */
         .greeting-section { text-align: center; margin-bottom: 30px; animation: fadeInDown 1s ease; }
         .greeting-text { font-size: 1.4rem; color: var(--text-main); margin: 0 0 5px 0; font-weight: 500; }
         .clock-text { font-size: 1.1rem; color: var(--brand-color); font-family: monospace; letter-spacing: 1px; font-weight: bold; margin: 0; }
 
         .search-container { width: 90%; max-width: 600px; margin: 0 auto 40px auto; position: relative; animation: fadeInDown 1.2s ease; }
-        .search-container input {
-            width: 100%; padding: 15px 20px 15px 50px; border-radius: 50px;
-            border: 2px solid var(--border-color); background: var(--bg-panel);
-            color: var(--text-main); font-size: 1rem; outline: none; transition: all 0.3s; box-sizing: border-box;
-        }
+        .search-container input { width: 100%; padding: 15px 20px 15px 50px; border-radius: 50px; border: 2px solid var(--border-color); background: var(--bg-panel); color: var(--text-main); font-size: 1rem; outline: none; transition: all 0.3s; box-sizing: border-box; }
         .search-container input:focus { border-color: var(--brand-color); box-shadow: 0 5px 15px rgba(197, 13, 35, 0.1); }
         .search-container i { position: absolute; left: 22px; top: 50%; transform: translateY(-50%); color: var(--text-sec); font-size: 1.1rem; }
 
         .apps-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; width: 90%; max-width: 1200px; padding-bottom: 50px; }
-        .app-card {
-            background: var(--bg-panel); border-radius: 20px; padding: 40px 30px; text-align: center;
-            border: 1px solid var(--border-color); transition: transform 0.3s, box-shadow 0.3s, border-color 0.3s, opacity 0.3s; position: relative;
-            cursor: pointer; display: flex; flex-direction: column; justify-content: space-between; height: 280px;
-        }
-        .app-card.hidden-card { display: none; } /* Para el filtro de búsqueda */
-
+        .app-card { background: var(--bg-panel); border-radius: 20px; padding: 40px 30px; text-align: center; border: 1px solid var(--border-color); transition: transform 0.3s, box-shadow 0.3s, border-color 0.3s, opacity 0.3s; position: relative; cursor: pointer; display: flex; flex-direction: column; justify-content: space-between; height: 280px; }
+        .app-card.hidden-card { display: none; }
         .app-card:hover { transform: translateY(-10px); box-shadow: 0 15px 30px rgba(197, 13, 35, 0.15); border-color: var(--brand-color); }
         .card-icon { font-size: 4rem; margin-bottom: 20px; color: var(--text-sec); transition: color 0.3s; }
         .app-card:hover .card-icon { color: var(--brand-color); }
@@ -160,17 +132,10 @@
         .app-frame.active { visibility: visible; opacity: 1; z-index: 20; pointer-events: auto; }
         #view-dashboard.hidden { display: none; }
 
-        /* NUEVO: ESTADOS DE CARGA Y ERROR */
-        .loading-overlay {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: var(--bg-dark); z-index: 30;
-            display: flex; flex-direction: column; justify-content: center; align-items: center;
-            opacity: 1; transition: opacity 0.3s, background-color 0.3s;
-        }
+        .loading-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: var(--bg-dark); z-index: 30; display: flex; flex-direction: column; justify-content: center; align-items: center; opacity: 1; transition: opacity 0.3s, background-color 0.3s; }
         .loading-overlay.hidden { opacity: 0; pointer-events: none; }
-        
         .spinner { width: 50px; height: 50px; border: 4px solid rgba(197, 13, 35, 0.2); border-top-color: var(--brand-color); border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 15px; }
         .loading-text { color: var(--text-sec); font-size: 1.1rem; letter-spacing: 1px; }
-
         .error-message { display: none; flex-direction: column; align-items: center; text-align: center; }
         .error-message i { font-size: 3rem; color: var(--brand-color); margin-bottom: 15px; }
         .error-message h3 { color: var(--text-main); margin: 0 0 10px 0; }
@@ -184,6 +149,34 @@
 </head>
 <body>
 
+    <div id="login-screen">
+        <div class="login-box">
+            <svg viewBox="0 0 284 164" xmlns="http://www.w3.org/2000/svg">
+                <path d="m142 7 135 47v56l-135 47-135-47V54z" fill="#C50D23" stroke="#C50D23" stroke-width="10" stroke-linejoin="round"></path>
+                <path d="m142 7 135 47v56l-135 47-135-47V54z" fill="none" stroke="#B08D57" stroke-width="2" stroke-linejoin="round"></path>
+                <text x="142" y="68" font-family="Times, serif" font-size="36" font-weight="bold" text-anchor="middle" fill="#404040">LA</text>
+                <text x="142" y="67" font-family="Times, serif" font-size="36" font-weight="bold" text-anchor="middle" fill="#FFF">LA</text>
+                <text x="142" y="103" font-family="Times, serif" font-size="42" font-weight="bold" text-anchor="middle" fill="#404040">GENOVESA</text>
+                <text x="142" y="102" font-family="Times, serif" font-size="42" font-weight="bold" text-anchor="middle" fill="#FFF">GENOVESA</text>
+            </svg>
+            <h2>Portal de Acceso</h2>
+            <p>Ingrese sus credenciales para continuar</p>
+            
+            <form id="loginForm" onsubmit="handleLogin(event)">
+                <div class="input-group">
+                    <i class="fas fa-user"></i>
+                    <input type="text" id="userInput" placeholder="Usuario" required autocomplete="off">
+                </div>
+                <div class="input-group">
+                    <i class="fas fa-lock"></i>
+                    <input type="password" id="pinInput" placeholder="Código de acceso" required autocomplete="off">
+                </div>
+                <button type="submit" class="login-btn" id="loginSubmitBtn">Ingresar al Sistema</button>
+                <div class="login-error" id="loginError">Usuario o código incorrectos.</div>
+            </form>
+        </div>
+    </div>
+
     <nav class="sidebar collapsed" id="sidebar">
         <div class="sidebar-header">
             <svg class="sidebar-logo-svg" viewBox="0 0 284 164" xmlns="http://www.w3.org/2000/svg">
@@ -193,7 +186,6 @@
                 <text x="142" y="67" font-family="Times, serif" font-size="36" font-weight="bold" text-anchor="middle" fill="#FFF">LA</text>
                 <text x="142" y="103" font-family="Times, serif" font-size="42" font-weight="bold" text-anchor="middle" fill="#404040">GENOVESA</text>
                 <text x="142" y="102" font-family="Times, serif" font-size="42" font-weight="bold" text-anchor="middle" fill="#FFF">GENOVESA</text>
-                <text x="142" y="127" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#FFF" letter-spacing="3">DESDE 1977</text>
             </svg>
             <span class="logo-text">GenFiler Suite</span>
         </div>
@@ -202,22 +194,24 @@
             <button class="menu-btn active" onclick="goHome()" data-tooltip="Inicio">
                 <i class="fas fa-home"></i> <span>Inicio</span>
             </button>
-	    <button class="menu-btn" onclick="openApp('xlsx')" data-tooltip="XLSX Reporter">
-                <i class="fas fa-file-excel"></i> <span>XLSX Reporter</span>
-            </button>	
-            <button class="menu-btn" onclick="openApp('genfiler')" data-tooltip="Geno_Filer PDF">
+            <button class="menu-btn" onclick="openApp('genfiler')" data-tooltip="GenFiler PDF">
                 <i class="far fa-file-pdf"></i> <span>GenFiler PDF</span>
             </button>
-            <button class="menu-btn" onclick="openApp('spsa')" data-tooltip="SPSA_Filer PDF">
+            <button class="menu-btn" onclick="openApp('spsa')" data-tooltip="SPSA Filer">
                 <i class="fas fa-chart-pie"></i> <span>SPSA Filer</span>
             </button>
-            
-            <button class="menu-btn" onclick="openApp('holi')" data-tooltip="Holi_Filer PDF">
+            <button class="menu-btn" onclick="openApp('xlsx')" data-tooltip="XLSX Reporter">
+                <i class="fas fa-file-excel"></i> <span>XLSX Reporter</span>
+            </button>
+            <button class="menu-btn" onclick="openApp('holi')" data-tooltip="Holi Filer">
                 <i class="fas fa-folder-open"></i> <span>Holi Filer</span>
             </button>
         </div>
 
         <div class="sidebar-footer">
+            <button class="menu-btn logout-btn" onclick="logout()" data-tooltip="Cerrar Sesión">
+                <i class="fas fa-sign-out-alt"></i> <span>Cerrar Sesión</span>
+            </button>
             <button class="menu-btn" onclick="toggleTheme()" data-tooltip="Cambiar Tema">
                 <i class="fas fa-sun" id="themeIcon"></i> <span id="themeText">Modo Claro</span>
             </button>
@@ -228,11 +222,9 @@
     </nav>
 
     <main class="main-content">
-        
         <div id="loading-overlay" class="loading-overlay hidden">
             <div class="spinner" id="loading-spinner"></div>
             <div class="loading-text" id="loading-text">Cargando aplicación...</div>
-            
             <div class="error-message" id="error-message">
                 <i class="fas fa-exclamation-triangle"></i>
                 <h3>Error de Conexión</h3>
@@ -250,7 +242,6 @@
                     <text x="142" y="67" font-family="Times, serif" font-size="36" font-weight="bold" text-anchor="middle" fill="#FFF">LA</text>
                     <text x="142" y="103" font-family="Times, serif" font-size="42" font-weight="bold" text-anchor="middle" fill="#404040">GENOVESA</text>
                     <text x="142" y="102" font-family="Times, serif" font-size="42" font-weight="bold" text-anchor="middle" fill="#FFF">GENOVESA</text>
-                    <text x="142" y="127" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#FFF" letter-spacing="3">DESDE 1977</text>
                 </svg>
                 <h1>GenFiler <span>Ecosystem</span> v2.0</h1>
                 <p class="dashboard-subtitle">Control unificado de procesamiento de datos</p>
@@ -267,39 +258,35 @@
             </div>
 
             <div class="apps-grid" id="appsGrid">
-
-		<div class="app-card" onclick="openApp('xlsx')">
+                <div class="app-card" onclick="openApp('genfiler')">
+                    <div>
+                        <div class="card-icon"><i class="far fa-file-pdf"></i></div>
+                        <div class="card-title">GenFiler PDF</div>
+                        <div class="card-desc">Procesar consolidados de Reparto Tacna, extracción de coordenadas y generación de etiquetas.</div>
+                    </div>
+                    <span class="launch-btn">Iniciar App</span>
+                </div>
+                <div class="app-card" onclick="openApp('spsa')">
+                    <div>
+                        <div class="card-icon"><i class="fas fa-chart-pie"></i></div>
+                        <div class="card-title">SPSA Filer</div>
+                        <div class="card-desc">Procesar Ordenes de Compra de SPSA / Makro.</div>
+                    </div>
+                    <span class="launch-btn">Iniciar App</span>
+                </div>
+                <div class="app-card" onclick="openApp('xlsx')">
                     <div>
                         <div class="card-icon"><i class="fas fa-file-excel"></i></div>
                         <div class="card-title">XLSX Reporter</div>
                         <div class="card-desc">Procesar pedidos en Excel, transformación de datos y reportes automatizados.</div>
                     </div>
                     <span class="launch-btn">Iniciar App</span>
-                </div>	
-		
-                <div class="app-card" onclick="openApp('genfiler')">
-                    <div>
-                        <div class="card-icon"><i class="far fa-file-pdf"></i></div>
-                        <div class="card-title">Geno_Filer PDF</div>
-                        <div class="card-desc">Procesar consolidados de Reparto Tacna, extracción de coordenadas y generación de etiquetas.</div>
-                    </div>
-                    <span class="launch-btn">Iniciar App</span>
                 </div>
-
-                <div class="app-card" onclick="openApp('spsa')">
-                    <div>
-                        <div class="card-icon"><i class="fas fa-chart-pie"></i></div>
-                        <div class="card-title">SPSA_Filer PDF</div>
-                        <div class="card-desc">Procesar Ordenes de Compra de SPSA / Makro.</div>
-                    </div>
-                    <span class="launch-btn">Iniciar App</span>
-                </div>
-
                 <div class="app-card" onclick="openApp('holi')">
                     <div>
                         <div class="card-icon"><i class="fas fa-folder-open"></i></div>
-                        <div class="card-title">Holi_Filer PDF</div>
-                        <div class="card-desc">Procesar ordenes de compra PDF "Holi Supermercados SAC"</div>
+                        <div class="card-title">Holi Filer</div>
+                        <div class="card-desc">Herramienta de gestión y procesamiento Holi Filer para organización de datos.</div>
                     </div>
                     <span class="launch-btn">Iniciar App</span>
                 </div>
@@ -308,7 +295,6 @@
             <footer style="margin-top: 0px; padding: 30px; color: var(--text-sec); font-size: 0.9rem; text-align: center; width: 100%;">
                 &copy; 2026 GenFiler Systems - MarioFPacoT - Almacén de productos Terminados - La Genovesa Agroindustrias S.A.
             </footer>
-
         </div>
 
         <iframe id="frame-genfiler" class="app-frame" data-src="https://almacenptlg-a11y.github.io/GenFiler/" sandbox="allow-scripts allow-same-origin allow-forms allow-downloads allow-popups"></iframe>
@@ -319,22 +305,115 @@
     </main>
 
     <script>
-        // --- 1. LÓGICA DE INICIO Y TEMA ---
+        // --- CONEXIÓN CON TU GOOGLE SHEET (API URL) ---
+        const API_URL = "https://script.google.com/macros/s/AKfycbxOsYSJn8JcKxCxBIpLqajGAVMr5axdVXCBpWwI7dqFmGlQfahRQghwj8uCkLVw8MwS/exec";
+
+        function checkAuth() {
+            const isAuth = localStorage.getItem('isGenFilerAuth');
+            const loginScreen = document.getElementById('login-screen');
+            
+            if (isAuth === 'true') {
+                loginScreen.style.opacity = '0';
+                setTimeout(() => { loginScreen.style.visibility = 'hidden'; }, 500);
+            } else {
+                loginScreen.style.visibility = 'visible';
+                loginScreen.style.opacity = '1';
+                const url = new URL(window.location);
+                url.searchParams.delete('app');
+                window.history.replaceState({}, '', url);
+            }
+        }
+
+        // --- NUEVO: FUNCIÓN ASÍNCRONA PARA VALIDAR EN EXCEL ---
+        async function handleLogin(event) {
+            event.preventDefault();
+            
+            const userStr = document.getElementById('userInput').value;
+            const pinStr = document.getElementById('pinInput').value;
+            const errorMsg = document.getElementById('loginError');
+            const submitBtn = document.getElementById('loginSubmitBtn');
+
+            // Estado de carga visual
+            errorMsg.style.display = 'none';
+            submitBtn.textContent = 'Verificando...';
+            submitBtn.disabled = true;
+
+            try {
+                // Enviar datos al "puente" de Google Apps Script
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    body: JSON.stringify({ usuario: userStr, password: pinStr })
+                });
+
+                // Recibir respuesta
+                const data = await response.json();
+
+                if (data.status === 'success') {
+                    // Guardar sesión y datos del empleado
+                    localStorage.setItem('isGenFilerAuth', 'true');
+                    localStorage.setItem('genFilerUserName', data.nombre);
+                    localStorage.setItem('genFilerUserRole', data.rol);
+
+                    // Limpiar formulario
+                    document.getElementById('userInput').value = '';
+                    document.getElementById('pinInput').value = '';
+
+                    checkAuth();
+                    updateClockAndGreeting(); // Forzar actualización del saludo con el nombre
+                } else {
+                    showLoginError('Usuario o código incorrectos.');
+                }
+            } catch (error) {
+                showLoginError('Error de conexión con el servidor.');
+                console.error("Error Fetch:", error);
+            } finally {
+                // Restaurar botón
+                submitBtn.textContent = 'Ingresar al Sistema';
+                submitBtn.disabled = false;
+            }
+        }
+
+        function showLoginError(msg) {
+            const errorMsg = document.getElementById('loginError');
+            errorMsg.textContent = msg;
+            errorMsg.style.display = 'block';
+            
+            // Animación de error
+            const loginBox = document.querySelector('.login-box');
+            loginBox.style.transform = 'translateX(10px)';
+            setTimeout(() => loginBox.style.transform = 'translateX(-10px)', 100);
+            setTimeout(() => loginBox.style.transform = 'translateX(0)', 200);
+        }
+
+        function logout() {
+            // Borrar todos los datos de sesión
+            localStorage.removeItem('isGenFilerAuth');
+            localStorage.removeItem('genFilerUserName');
+            localStorage.removeItem('genFilerUserRole');
+            
+            checkAuth();
+            goHome();
+        }
+
+        // --- LÓGICA EXISTENTE ---
         window.addEventListener('DOMContentLoaded', () => {
+            checkAuth();
+
             const savedTheme = localStorage.getItem('theme');
             const themeIcon = document.getElementById('themeIcon');
             const themeText = document.getElementById('themeText');
-            
             if (savedTheme === 'light') {
                 document.body.classList.add('light-mode');
                 themeIcon.classList.replace('fa-sun', 'fa-moon');
                 themeText.textContent = 'Modo Oscuro';
             }
 
-            const params = new URLSearchParams(window.location.search);
-            const appToOpen = params.get('app');
-            if (appToOpen && document.getElementById(`frame-${appToOpen}`)) {
-                openApp(appToOpen, false);
+            if(localStorage.getItem('isGenFilerAuth') === 'true') {
+                const params = new URLSearchParams(window.location.search);
+                const appToOpen = params.get('app');
+                if (appToOpen && document.getElementById(`frame-${appToOpen}`)) {
+                    openApp(appToOpen, false);
+                }
             }
         });
 
@@ -354,53 +433,36 @@
             }
         }
 
-        // --- 2. RELOJ Y SALUDO (ACTUALIZACIÓN EN TIEMPO REAL) ---
+        // --- NUEVO: SALUDO CON EL NOMBRE DEL EXCEL ---
         function updateClockAndGreeting() {
             const now = new Date();
             const hours = now.getHours();
             let greeting = 'Buenos días';
+            if (hours >= 12 && hours < 19) { greeting = 'Buenas tardes'; } else if (hours >= 19) { greeting = 'Buenas noches'; }
             
-            if (hours >= 12 && hours < 19) {
-                greeting = 'Buenas tardes';
-            } else if (hours >= 19) {
-                greeting = 'Buenas noches';
-            }
+            // Buscar el nombre en memoria, si no existe usar "Equipo"
+            const nombreEmpleado = localStorage.getItem('genFilerUserName') || 'Equipo';
             
-            document.getElementById('greetingText').textContent = greeting + ', Equipo';
-            
-            // Forzamos el horario local para Perú (es-PE)
-            document.getElementById('clockText').textContent = now.toLocaleTimeString('es-PE', { 
-                hour: '2-digit', minute: '2-digit', second: '2-digit' 
-            });
+            document.getElementById('greetingText').textContent = greeting + ', ' + nombreEmpleado;
+            document.getElementById('clockText').textContent = now.toLocaleTimeString('es-PE', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
         }
         setInterval(updateClockAndGreeting, 1000);
-        updateClockAndGreeting(); // Ejecutar inmediatamente
+        updateClockAndGreeting();
 
-        // --- 3. BUSCADOR/FILTRO EN TIEMPO REAL ---
         document.getElementById('appSearch').addEventListener('input', function(e) {
             const term = e.target.value.toLowerCase();
             const cards = document.querySelectorAll('.app-card');
-            
             cards.forEach(card => {
                 const title = card.querySelector('.card-title').textContent.toLowerCase();
                 const desc = card.querySelector('.card-desc').textContent.toLowerCase();
-                
-                if (title.includes(term) || desc.includes(term)) {
-                    card.classList.remove('hidden-card');
-                } else {
-                    card.classList.add('hidden-card');
-                }
+                if (title.includes(term) || desc.includes(term)) { card.classList.remove('hidden-card'); } else { card.classList.add('hidden-card'); }
             });
         });
 
-        // --- 4. CONTROL DE APLICACIONES Y TIMEOUT DE ERROR ---
-        let loadTimeout; // Variable para almacenar el temporizador
-
+        let loadTimeout;
         function openApp(appId, pushState = true) {
-            // Limpiar barra de búsqueda al abrir app
             document.getElementById('appSearch').value = '';
             document.querySelectorAll('.app-card').forEach(c => c.classList.remove('hidden-card'));
-
             document.querySelectorAll('.menu-btn').forEach(btn => btn.classList.remove('active'));
             const sidebarBtn = document.querySelector(`.menu-btn[onclick*="openApp('${appId}')"]`);
             if(sidebarBtn) sidebarBtn.classList.add('active');
@@ -411,40 +473,28 @@
             const targetFrame = document.getElementById(`frame-${appId}`);
             if(targetFrame) {
                 targetFrame.classList.add('active');
-
-                // Si la app no ha sido cargada aún
                 if (!targetFrame.getAttribute('src')) {
                     const overlay = document.getElementById('loading-overlay');
                     const spinner = document.getElementById('loading-spinner');
                     const text = document.getElementById('loading-text');
                     const errorMsg = document.getElementById('error-message');
                     
-                    // Reiniciar vista de carga
-                    spinner.style.display = 'block';
-                    text.style.display = 'block';
-                    errorMsg.style.display = 'none';
+                    spinner.style.display = 'block'; text.style.display = 'block'; errorMsg.style.display = 'none';
                     overlay.classList.remove('hidden');
                     
                     targetFrame.setAttribute('src', targetFrame.getAttribute('data-src'));
                     
-                    // Iniciar el temporizador (Timeout de 12 segundos)
                     clearTimeout(loadTimeout);
                     loadTimeout = setTimeout(() => {
-                        spinner.style.display = 'none';
-                        text.style.display = 'none';
-                        errorMsg.style.display = 'flex'; // Mostrar error
+                        spinner.style.display = 'none'; text.style.display = 'none'; errorMsg.style.display = 'flex';
                     }, 12000);
 
-                    // Si carga con éxito antes de los 12 seg
                     targetFrame.onload = function() {
-                        clearTimeout(loadTimeout); // Cancelar la alarma de error
-                        overlay.classList.add('hidden');
+                        clearTimeout(loadTimeout); overlay.classList.add('hidden');
                     };
 
-                    // Lógica del botón de reintentar
                     document.getElementById('retry-btn').onclick = function() {
-                        targetFrame.removeAttribute('src'); // Limpiar para forzar recarga
-                        openApp(appId, false); // Volver a intentar
+                        targetFrame.removeAttribute('src'); openApp(appId, false);
                     };
                 }
             }
@@ -463,7 +513,6 @@
             document.getElementById('view-dashboard').classList.remove('hidden');
             document.querySelectorAll('.app-frame').forEach(frame => frame.classList.remove('active'));
 
-            // Limpiar buscador al volver
             document.getElementById('appSearch').value = '';
             document.querySelectorAll('.app-card').forEach(c => c.classList.remove('hidden-card'));
 
@@ -476,24 +525,14 @@
             const sidebar = document.getElementById('sidebar');
             const icon = document.getElementById('toggleIcon');
             sidebar.classList.toggle('collapsed');
-            
-            if (sidebar.classList.contains('collapsed')) {
-                icon.classList.remove('fa-chevron-left');
-                icon.classList.add('fa-chevron-right');
-            } else {
-                icon.classList.remove('fa-chevron-right');
-                icon.classList.add('fa-chevron-left');
-            }
+            if (sidebar.classList.contains('collapsed')) { icon.classList.remove('fa-chevron-left'); icon.classList.add('fa-chevron-right'); } else { icon.classList.remove('fa-chevron-right'); icon.classList.add('fa-chevron-left'); }
         }
 
         window.addEventListener('popstate', () => {
+            if(localStorage.getItem('isGenFilerAuth') !== 'true') return;
             const params = new URLSearchParams(window.location.search);
             const appToOpen = params.get('app');
-            if (appToOpen) {
-                openApp(appToOpen, false);
-            } else {
-                goHome();
-            }
+            if (appToOpen) { openApp(appToOpen, false); } else { goHome(); }
         });
     </script>
 </body>
