@@ -33,27 +33,12 @@
 
         body { margin: 0; padding: 0; font-family: 'Segoe UI', system-ui, sans-serif; background-color: var(--bg-dark); color: var(--text-main); overflow: hidden; display: flex; height: 100vh; transition: background-color 0.3s, color 0.3s; }
 
-        /* --- PANTALLA DE LOGIN --- */
+        /* --- PANTALLA DE ESPERA (REEMPLAZA AL LOGIN) --- */
         #login-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: var(--bg-dark); z-index: 9999; display: flex; flex-direction: column; justify-content: center; align-items: center; transition: opacity 0.5s ease, visibility 0.5s ease; }
         .login-box { background: var(--bg-panel); padding: 50px 40px; border-radius: 20px; border: 1px solid var(--border-color); text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.3); width: 90%; max-width: 400px; animation: fadeInDown 0.8s ease; position: relative; }
         .login-box svg { width: 120px; margin-bottom: 20px; filter: drop-shadow(0 0 10px rgba(197, 13, 35, 0.2)); }
         .login-box h2 { margin: 0 0 10px 0; color: var(--text-main); font-size: 1.8rem; }
         .login-box p { color: var(--text-sec); margin-bottom: 30px; font-size: 0.95rem; }
-        .input-group { position: relative; margin-bottom: 20px; }
-        .input-group i { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: var(--text-sec); }
-        .input-group input { width: 100%; padding: 15px 15px 15px 45px; border-radius: 10px; border: 2px solid var(--border-color); background: var(--bg-dark); color: var(--text-main); font-size: 1rem; outline: none; transition: all 0.3s; box-sizing: border-box; }
-        .input-group input:focus { border-color: var(--brand-color); }
-        .login-btn { width: 100%; background: var(--brand-color); color: white; border: none; padding: 15px; border-radius: 10px; font-weight: bold; font-size: 1rem; cursor: pointer; transition: background 0.3s, opacity 0.3s; text-transform: uppercase; letter-spacing: 1px; }
-        .login-btn:hover { background: var(--brand-dark); }
-        .login-btn:disabled { opacity: 0.7; cursor: not-allowed; }
-        .login-error { color: #ff4757; font-size: 0.9rem; margin-top: 15px; display: none; }
-
-        /* --- NUEVO: MODAL DE PERFIL --- */
-        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.7); z-index: 9998; display: flex; justify-content: center; align-items: center; opacity: 1; transition: opacity 0.3s ease; backdrop-filter: blur(5px); }
-        .modal-overlay.hidden { opacity: 0; pointer-events: none; }
-        .close-btn { position: absolute; top: 15px; right: 20px; background: none; border: none; color: var(--text-sec); font-size: 1.5rem; cursor: pointer; transition: color 0.3s; }
-        .close-btn:hover { color: var(--brand-color); }
-        .success-msg { color: #2ecc71; font-size: 0.95rem; margin-top: 15px; display: none; font-weight: bold; }
 
         /* --- SIDEBAR --- */
         .sidebar { width: var(--sidebar-width); background-color: var(--bg-panel); border-right: 1px solid var(--border-color); display: flex; flex-direction: column; transition: width var(--transition-speed) ease, background-color 0.3s; z-index: 1000; flex-shrink: 0; position: relative; }
@@ -77,10 +62,8 @@
         .sidebar.collapsed .menu-btn:hover::after { opacity: 1; visibility: visible; transform: translateY(-50%) translateX(5px); }
 
         .sidebar-footer { border-top: 1px solid var(--border-color); display: flex; flex-direction: column; }
-        .toggle-btn { background: rgba(0,0,0,0.03); border: none; color: var(--text-sec); padding: 15px; cursor: pointer; text-align: center; border-top: 1px solid var(--border-color); transition: all 0.3s; }
+        .toggle-btn { background: rgba(0,0,0,0.03); border: none; color: var(--text-sec); padding: 15px; cursor: pointer; text-align: center; transition: all 0.3s; width: 100%; }
         .toggle-btn:hover { color: var(--text-main); background: var(--hover-bg); }
-        .logout-btn { color: #ff4757; }
-        .logout-btn:hover { background-color: rgba(255, 71, 87, 0.1); color: #ff4757; }
 
         /* --- MAIN AREA --- */
         .main-content { flex-grow: 1; position: relative; background-color: var(--bg-dark); overflow: hidden; transition: background-color 0.3s; }
@@ -142,52 +125,11 @@
                 <text x="142" y="103" font-family="Times, serif" font-size="42" font-weight="bold" text-anchor="middle" fill="#404040">GENOVESA</text>
                 <text x="142" y="102" font-family="Times, serif" font-size="42" font-weight="bold" text-anchor="middle" fill="#FFF">GENOVESA</text>
             </svg>
-            <h2>Portal de Acceso</h2>
-            <p>Ingrese sus credenciales para continuar</p>
-            
-            <form id="loginForm" onsubmit="handleLogin(event)">
-                <div class="input-group">
-                    <i class="fas fa-user"></i>
-                    <input type="text" id="userInput" placeholder="Usuario" required autocomplete="off">
-                </div>
-                <div class="input-group">
-                    <i class="fas fa-lock"></i>
-                    <input type="password" id="pinInput" placeholder="Contraseña" required autocomplete="off">
-                </div>
-                <button type="submit" class="login-btn" id="loginSubmitBtn">Ingresar al Sistema</button>
-                <div class="login-error" id="loginError">Usuario o contraseña incorrectos.</div>
-            </form>
-        </div>
-    </div>
-
-    <div id="profile-modal" class="modal-overlay hidden">
-        <div class="login-box" style="padding: 40px 30px;">
-            <button class="close-btn" onclick="closeProfileModal()"><i class="fas fa-times"></i></button>
-            <h2 style="margin-bottom: 5px;">Mi Perfil</h2>
-            <p style="margin-bottom: 25px;">Actualiza tus datos de acceso</p>
-            
-            <form id="profileForm" onsubmit="handleProfileUpdate(event)">
-                <div class="input-group">
-                    <i class="fas fa-lock" style="color: var(--brand-color);"></i>
-                    <input type="password" id="currentPassInput" placeholder="Contraseña actual (Requerida)" required>
-                </div>
-                
-                <hr style="border: 0; border-top: 1px solid var(--border-color); margin: 25px 0;">
-                <p style="font-size: 0.85rem; color: var(--text-sec); margin-bottom: 15px; text-align: left;">Deja en blanco lo que NO desees cambiar:</p>
-                
-                <div class="input-group">
-                    <i class="fas fa-user-edit"></i>
-                    <input type="text" id="newIdInput" placeholder="Nuevo Usuario (Opcional)">
-                </div>
-                <div class="input-group">
-                    <i class="fas fa-key"></i>
-                    <input type="password" id="newPassInput" placeholder="Nueva Contraseña (Opcional)">
-                </div>
-                
-                <button type="submit" class="login-btn" id="profileSubmitBtn">Guardar Cambios</button>
-                <div class="login-error" id="profileError"></div>
-                <div class="success-msg" id="profileSuccess">¡Datos actualizados con éxito!</div>
-            </form>
+            <h2 id="auth-title">Conectando con GENAPPS...</h2>
+            <p id="auth-desc">Sincronizando credenciales de usuario</p>
+            <div id="auth-spinner" style="margin-top: 20px;">
+                <i class="fas fa-circle-notch fa-spin fa-3x" style="color: var(--brand-color);"></i>
+            </div>
         </div>
     </div>
 
@@ -223,15 +165,6 @@
         </div>
 
         <div class="sidebar-footer">
-            <button class="menu-btn" onclick="openProfileModal()" data-tooltip="Mi Perfil">
-                <i class="fas fa-user-edit"></i> <span>Mi Perfil</span>
-            </button>
-            <button class="menu-btn logout-btn" onclick="logout()" data-tooltip="Cerrar Sesión">
-                <i class="fas fa-sign-out-alt"></i> <span>Cerrar Sesión</span>
-            </button>
-            <button class="menu-btn" onclick="toggleTheme()" data-tooltip="Cambiar Tema">
-                <i class="fas fa-sun" id="themeIcon"></i> <span id="themeText">Modo Claro</span>
-            </button>
             <button class="toggle-btn" onclick="toggleSidebar()">
                 <i class="fas fa-chevron-right" id="toggleIcon"></i>
             </button>
@@ -324,25 +257,78 @@
     <script>
         const API_URL = "https://script.google.com/macros/s/AKfycbxOsYSJn8JcKxCxBIpLqajGAVMr5axdVXCBpWwI7dqFmGlQfahRQghwj8uCkLVw8MwS/exec";
 
-        function checkAuth() {
-            const isAuth = localStorage.getItem('isGenFilerAuth');
-            const loginScreen = document.getElementById('login-screen');
-            
-            if (isAuth === 'true') {
+        // ==========================================
+        // 1. ESCUCHAR AL HUB PRINCIPAL (GENAPPS)
+        // ==========================================
+        window.addEventListener('message', (event) => {
+            const { type, user, theme } = event.data || {};
+
+            if (type === 'THEME_UPDATE') {
+                if (theme === 'dark') document.body.classList.remove('light-mode');
+                else document.body.classList.add('light-mode');
+                
+                // Reenviar el tema a las aplicaciones hijas (Si es que escuchan THEME_UPDATE)
+                document.querySelectorAll('.app-frame').forEach(f => {
+                    if(f.contentWindow) f.contentWindow.postMessage({ type: 'THEME_UPDATE', theme }, '*');
+                });
+            }
+
+            if (type === 'SESSION_SYNC' && user) {
+                // Sincronizar Tema
+                if (theme === 'dark') document.body.classList.remove('light-mode');
+                else document.body.classList.add('light-mode');
+
+                // Sincronizar Credenciales (Usamos sessionStorage para no ensuciar el HUB padre)
+                sessionStorage.setItem('isGenFilerAuth', 'true');
+                sessionStorage.setItem('genFilerUserName', user.nombre);
+                sessionStorage.setItem('genFilerUserId', user.usuario);
+
+                // Ocultar pantalla de espera
+                const loginScreen = document.getElementById('login-screen');
                 loginScreen.style.opacity = '0';
                 setTimeout(() => { loginScreen.style.visibility = 'hidden'; }, 500);
-            } else {
-                loginScreen.style.visibility = 'visible';
-                loginScreen.style.opacity = '1';
-                const url = new URL(window.location);
-                url.searchParams.delete('app');
-                window.history.replaceState({}, '', url);
-            }
-        }
 
+                updateClockAndGreeting();
+                
+                // Cargar app directa si la URL lo pide
+                const params = new URLSearchParams(window.location.search);
+                const appToOpen = params.get('app');
+                if (appToOpen && document.getElementById(`frame-${appToOpen}`)) {
+                    openApp(appToOpen, false);
+                }
+                
+                // Reenviar la sesión a las aplicaciones hijas por si la necesitan
+                document.querySelectorAll('.app-frame').forEach(f => {
+                    if(f.contentWindow) f.contentWindow.postMessage({ type: 'SESSION_SYNC', user, theme }, '*');
+                });
+            }
+        });
+
+        // ==========================================
+        // 2. INICIALIZAR Y SALUDAR AL PADRE
+        // ==========================================
+        window.addEventListener('DOMContentLoaded', () => {
+            // Gritar al padre que ya despertamos
+            window.parent.postMessage({ type: 'MODULO_LISTO' }, '*');
+
+            // Bloqueo de seguridad si el padre no responde en 4 segundos
+            setTimeout(() => {
+                if (sessionStorage.getItem('isGenFilerAuth') !== 'true') {
+                    document.getElementById('auth-title').innerText = "Acceso Denegado";
+                    document.getElementById('auth-title').style.color = "#ff4757";
+                    document.getElementById('auth-desc').innerText = "No se recibió autorización del HUB GENAPPS.";
+                    document.getElementById('auth-spinner').innerHTML = '<i class="fas fa-exclamation-triangle fa-3x" style="color: #ff4757;"></i>';
+                }
+            }, 4000);
+        });
+
+
+        // ==========================================
+        // 3. AUDITORÍA (Mantenemos tu Script local para saber qué abren aquí)
+        // ==========================================
         function logActivity(actionDesc) {
-            const userName = localStorage.getItem('genFilerUserName');
-            const userId = localStorage.getItem('genFilerUserId');
+            const userName = sessionStorage.getItem('genFilerUserName');
+            const userId = sessionStorage.getItem('genFilerUserId');
             if (!userName || !userId) return; 
             
             fetch(API_URL, {
@@ -351,189 +337,22 @@
             }).catch(e => console.error("Error enviando log:", e));
         }
 
-        async function handleLogin(event) {
-            event.preventDefault();
-            
-            const userStr = document.getElementById('userInput').value;
-            const pinStr = document.getElementById('pinInput').value;
-            const errorMsg = document.getElementById('loginError');
-            const submitBtn = document.getElementById('loginSubmitBtn');
-
-            errorMsg.style.display = 'none';
-            submitBtn.textContent = 'Verificando...';
-            submitBtn.disabled = true;
-
-            try {
-                const response = await fetch(API_URL, {
-                    method: 'POST',
-                    body: JSON.stringify({ actionType: 'login', usuario: userStr, password: pinStr })
-                });
-
-                const data = await response.json();
-
-                if (data.status === 'success') {
-                    localStorage.setItem('isGenFilerAuth', 'true');
-                    localStorage.setItem('genFilerUserName', data.nombre);
-                    localStorage.setItem('genFilerUserId', data.usuarioId);
-
-                    document.getElementById('userInput').value = '';
-                    document.getElementById('pinInput').value = '';
-
-                    checkAuth();
-                    updateClockAndGreeting();
-                } else {
-                    showLoginError('Usuario o contraseña incorrectos.');
-                }
-            } catch (error) {
-                showLoginError('Error de conexión con el servidor.');
-            } finally {
-                submitBtn.textContent = 'Ingresar al Sistema';
-                submitBtn.disabled = false;
-            }
-        }
-
-        function showLoginError(msg) {
-            const errorMsg = document.getElementById('loginError');
-            errorMsg.textContent = msg;
-            errorMsg.style.display = 'block';
-            const loginBox = document.querySelector('.login-box');
-            loginBox.style.transform = 'translateX(10px)';
-            setTimeout(() => loginBox.style.transform = 'translateX(-10px)', 100);
-            setTimeout(() => loginBox.style.transform = 'translateX(0)', 200);
-        }
-
-        // --- NUEVO: LÓGICA DEL MODAL DE PERFIL ---
-        function openProfileModal() {
-            // Pre-llenar el campo de "Nuevo Usuario" con el actual para que sea fácil editarlo
-            document.getElementById('newIdInput').value = localStorage.getItem('genFilerUserId') || '';
-            document.getElementById('currentPassInput').value = '';
-            document.getElementById('newPassInput').value = '';
-            document.getElementById('profileError').style.display = 'none';
-            document.getElementById('profileSuccess').style.display = 'none';
-            
-            document.getElementById('profile-modal').classList.remove('hidden');
-        }
-
-        function closeProfileModal() {
-            document.getElementById('profile-modal').classList.add('hidden');
-        }
-
-        async function handleProfileUpdate(event) {
-            event.preventDefault();
-            
-            const currentPass = document.getElementById('currentPassInput').value;
-            const newId = document.getElementById('newIdInput').value;
-            const newPass = document.getElementById('newPassInput').value;
-            
-            const currentId = localStorage.getItem('genFilerUserId');
-            const errorMsg = document.getElementById('profileError');
-            const successMsg = document.getElementById('profileSuccess');
-            const submitBtn = document.getElementById('profileSubmitBtn');
-
-            errorMsg.style.display = 'none';
-            successMsg.style.display = 'none';
-            submitBtn.textContent = 'Guardando...';
-            submitBtn.disabled = true;
-
-            try {
-                const response = await fetch(API_URL, {
-                    method: 'POST',
-                    body: JSON.stringify({ 
-                        actionType: 'update_profile', 
-                        currentId: currentId, 
-                        currentPass: currentPass,
-                        newId: newId,
-                        newPass: newPass
-                    })
-                });
-
-                const data = await response.json();
-
-                if (data.status === 'success') {
-                    // Actualizamos la sesión con el nuevo usuario si lo cambió
-                    localStorage.setItem('genFilerUserId', data.newId);
-                    
-                    document.getElementById('currentPassInput').value = '';
-                    document.getElementById('newPassInput').value = '';
-                    
-                    successMsg.style.display = 'block';
-                    setTimeout(() => {
-                        closeProfileModal();
-                        successMsg.style.display = 'none';
-                    }, 2000); // Cierra el modal solo después de 2 segundos de éxito
-                } else {
-                    errorMsg.textContent = data.message || 'Error al actualizar.';
-                    errorMsg.style.display = 'block';
-                }
-            } catch (error) {
-                errorMsg.textContent = 'Error de conexión con el servidor.';
-                errorMsg.style.display = 'block';
-            } finally {
-                submitBtn.textContent = 'Guardar Cambios';
-                submitBtn.disabled = false;
-            }
-        }
-
-        function logout() {
-            logActivity("Cerró sesión");
-            setTimeout(() => {
-                localStorage.removeItem('isGenFilerAuth');
-                localStorage.removeItem('genFilerUserName');
-                localStorage.removeItem('genFilerUserId');
-                checkAuth();
-                goHome();
-            }, 500);
-        }
-
-        window.addEventListener('DOMContentLoaded', () => {
-            checkAuth();
-            const savedTheme = localStorage.getItem('theme');
-            const themeIcon = document.getElementById('themeIcon');
-            const themeText = document.getElementById('themeText');
-            if (savedTheme === 'light') {
-                document.body.classList.add('light-mode');
-                themeIcon.classList.replace('fa-sun', 'fa-moon');
-                themeText.textContent = 'Modo Oscuro';
-            }
-
-            if(localStorage.getItem('isGenFilerAuth') === 'true') {
-                const params = new URLSearchParams(window.location.search);
-                const appToOpen = params.get('app');
-                if (appToOpen && document.getElementById(`frame-${appToOpen}`)) {
-                    openApp(appToOpen, false);
-                }
-            }
-        });
-
-        function toggleTheme() {
-            const isLight = document.body.classList.toggle('light-mode');
-            const themeIcon = document.getElementById('themeIcon');
-            const themeText = document.getElementById('themeText');
-
-            if (isLight) {
-                localStorage.setItem('theme', 'light');
-                themeIcon.classList.replace('fa-sun', 'fa-moon');
-                themeText.textContent = 'Modo Oscuro';
-            } else {
-                localStorage.setItem('theme', 'dark');
-                themeIcon.classList.replace('fa-moon', 'fa-sun');
-                themeText.textContent = 'Modo Claro';
-            }
-        }
-
+        // ==========================================
+        // 4. UI Y FUNCIONALIDAD DEL DASHBOARD
+        // ==========================================
         function updateClockAndGreeting() {
             const now = new Date();
             const hours = now.getHours();
             let greeting = 'Buenos días';
             if (hours >= 12 && hours < 19) { greeting = 'Buenas tardes'; } else if (hours >= 19) { greeting = 'Buenas noches'; }
             
-            const nombreEmpleado = localStorage.getItem('genFilerUserName') || 'Equipo';
+            // Leemos de sessionStorage porque el HUB padre inyectó la sesión ahí
+            const nombreEmpleado = sessionStorage.getItem('genFilerUserName') || 'Equipo';
           
             document.getElementById('greetingText').textContent = greeting + ', ' + nombreEmpleado;
             document.getElementById('clockText').textContent = now.toLocaleTimeString('es-PE', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
         }
         setInterval(updateClockAndGreeting, 1000);
-        updateClockAndGreeting();
 
         document.getElementById('appSearch').addEventListener('input', function(e) {
             const term = e.target.value.toLowerCase();
@@ -626,7 +445,7 @@
         }
 
         window.addEventListener('popstate', () => {
-            if(localStorage.getItem('isGenFilerAuth') !== 'true') return;
+            if(sessionStorage.getItem('isGenFilerAuth') !== 'true') return;
             const params = new URLSearchParams(window.location.search);
             const appToOpen = params.get('app');
             if (appToOpen) { openApp(appToOpen, false); } else { goHome(); }
